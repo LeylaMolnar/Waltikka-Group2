@@ -6,6 +6,14 @@
   <title>Document</title>
 </head>
 <body>
-
+  <script>
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+      let responseJSON = JSON.parse(this.responseText);
+          console.log(responseJSON.kind);
+  }
+  xhttp.open("GET", "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime=2023-02-01T00:00:00Z&endTime=2023-09-04T12:30:00Z&fields=temperature,humidity,co2,light,motion,vdd", true);
+  xhttp.send();
+  </script>
 </body>
 </html>
