@@ -1,19 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <script>
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {
-      let responseJSON = JSON.parse(this.responseText);
-          console.log(responseJSON.kind);
-  }
-  xhttp.open("GET", "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime=2023-02-01T00:00:00Z&endTime=2023-09-04T12:30:00Z&fields=temperature,humidity,co2,light,motion,vdd", true);
-  xhttp.send();
-  </script>
+    <table>
+        <head>
+            <tr>
+                <th>Date</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+                <th>CO2 (ppm)</th>
+
+            </tr>
+        </head>
+        <tbody id="data-container">
+            <!-- Data will be displayed here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Define your API key
+        const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
+
+        // Define the URL
+        const apiUrl = 'https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime=2023-08-01T00:00:00Z&endTime=2023-09-04T12:30:00Z&fields=temperature,humidity,co2,light,motion,vdd';
+
+        // Create an array to store the API data
+        const apiDataArray = [];
+
+        // Function to fetch data from the API
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'x-api-key': apiKey
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+
+                // Check if responseData has a "series" property with "values"
+                if (Array.isArray(responseData.results)) {
+                    responseData.results.forEach(result => {
+                        if (Array.isArray(result.series)) {
+                            result.series.forEach(series => {
+                                if (Array.isArray(series.values)) {
+                                    series.values.forEach(entry => {
+                                        const [date, temperature, humidity, co2,] = entry;
+                                        apiDataArray.push({ date, temperature, humidity, co2});
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    // Call a function to display the data in the table
+                    displayData(apiDataArray);
+                } else {
+                    console.error('Data structure is not as expected:', responseData);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Function to display the data in the table
+        function displayData(dataArray) {
+            const dataContainer = document.getElementById('data-container');
+            dataArray.forEach(entry => {
+                const row = document.createElement('tr');
+                const dateCell = document.createElement('td');
+                dateCell.textContent = entry.date;
+                const temperatureCell = document.createElement('td');
+                temperatureCell.textContent = entry.temperature;
+                const humidityCell = document.createElement('td');
+                humidityCell.textContent = entry.humidity;
+                const co2Cell = document.createElement('td');
+                co2Cell.textContent = entry.co2;
+                row.appendChild(dateCell);
+                row.appendChild(temperatureCell);
+                row.appendChild(humidityCell);
+                row.appendChild(co2Cell);
+                dataContainer.appendChild(row);
+            });
+        }
+
+        // Call the fetchData function when the page loads
+        window.onload = fetchData;
+    </script>
 </body>
 </html>
