@@ -1,11 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Waltikka</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
-<body>
+<body>  
+    <header>
+        <div class="fusion-logo">
+            <a class="fusion-logo-link" href="https://www.waltikka.fi/">
+        
+            <img src="https://www.waltikka.fi/wp-content/uploads/logo-2.png" srcset="https://www.waltikka.fi/wp-content/uploads/logo-2.png 1x, https://www.waltikka.fi/wp-content/uploads/waltikka-logo-retina.png 2x" width="243" height="90" style="max-height:90px;height:auto;" alt="Rantahotel Waltikka Logo" data-retina_logo_url="https://www.waltikka.fi/wp-content/uploads/waltikka-logo-retina.png" class="fusion-standard-logo">
+            </a>
+        </div>         
+    </header>
+        <div class="white-box">
+            <div class="top-text">
+                <h1>Sensors' Dashboard</h1>
 
+            <div class="Date">
+                <input type="text" name="datefilter" value="View Historical Data" />
+    
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $('input[name="datefilter"]').daterangepicker({
+                            autoUpdateInput: false,
+                            locale: {
+                                cancelLabel: 'Clear'
+                            }
+                        });
+                
+                        $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+                            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+                        });
+                
+                        $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+                            $(this).val('');
+                        });
+                    });
+                </script>                
+            </div>
+            
+            <div class="top-droplist">
+                <div>
+                <label for="sensor-select" style="font-size: small;">Filter:</label>
+                <br>
+                    <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+                    <option value="AllSensors">--All Sensors--</option>
+                    <option value="Sensor1">Sensor 1</option>
+                    <option value="Sensor2">Sensor 2</option>
+                    <option value="Sensor3">Sensor 3</option>
+                    <option value="Sensor4">Sensor 4</option>
+                    <option value="Sensor5">Sensor 5</option>
+                    <option value="Sensor6">Sensor 6</option>
+                    <option value="Sensor7">Sensor 7</option>
+                    <option value="Sensor8">Sensor 8</option>
+                    <option value="Sensor9">Sensor 9</option>
+                    <option value="Sensor10">Sensor 10</option>
+                    <option value="Sensor11">Sensor 11</option>
+                    <option value="Sensor12">Sensor 12</option>
+                    <option value="Sensor13">Sensor 13</option>
+                    <option value="Sensor14">Sensor 14</option>
+                    <option value="Sensor15">Sensor 15</option>
+                    <option value="Sensor16">Sensor 16</option>
+                    <option value="Sensor17">Sensor 17</option>
+                </select>
+                </div>
+            </div>
+            </div>
+            <div class="box">Sensor 1</div>
+            <div class="box">Sensor 2</div>
+            <div class="box">Sensor 3</div>
+            <div class="box">Sensor 4</div>
+            <div class="box">Sensor 5</div>
+            <div class="box">Sensor 6</div>
+            <div class="box">Sensor 7</div>
+            <div class="box">Sensor 8</div>
+            <div class="box">Sensor 9</div>
+            <div class="box">Sensor 10</div>
+            <div class="box">Sensor 11</div>
+            <div class="box">Sensor 12</div>
+            <div class="box">Sensor 13</div>
+            <div class="box">Sensor 14</div>
+            <div class="box">Sensor 15</div>
+            <div class="box">Sensor 16</div>
+            <div class="box">Sensor 17</div>
+        </div>
+    <footer>
+        <p> </p>
+    </footer>
 </body>
 </html>
