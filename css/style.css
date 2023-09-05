@@ -1,15 +1,17 @@
 body {
-    background-color: #474646;
+    background-color: #3C3C3B !important; 
+    /*
     display: grid;
     justify-content: center;
     align-items: center;
+    */
     height: 100vh;
     margin: 0;
 }
 
-.white-box {
-    background-color: #edebeb;
-    width: 1280px;
+.white-box2 {
+    background-color: #F3F2F1;
+    /*width: 95%;*/
     text-align: center;
     padding: 20px;
     padding-top: 200px;
@@ -23,15 +25,16 @@ body {
 }
 
 .box {
-    background-color: #fff;
-    width: calc(22% - 10px);
+    background-color: #66C1DC;
+    /*width: calc(22% - 10px);*/
+    width: 200px;
     height: 200px;
     text-align: center;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
-    margin: 20px 20px 20px 20px;
+    margin: 20px 20px;
 }
 
 .fusion-logo {
@@ -39,7 +42,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #474646;
+    background-color: #3C3C3B;
     margin-right: 20px;
     max-height: 80px;
 }
