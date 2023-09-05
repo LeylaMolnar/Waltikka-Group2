@@ -1,7 +1,81 @@
-/*Color palette
-Background & Font:  #D9D9D9
-Header:             #3C3C3B
-Red alert:          #F66D6E
-Yellow alert:       #FDC12E
-Blue:               #66C1DC
-*/
+body {
+    background-color: #474646;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.white-box {
+    background-color: #edebeb;
+    width: 1280px;
+    text-align: center;
+    padding: 20px;
+    padding-top: 200px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 10px 10px 10px 10px;
+}
+
+.box {
+    background-color: #fff;
+    width: calc(22% - 10px);
+    height: 200px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    margin: 20px 20px 20px 20px;
+}
+
+.fusion-logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #474646;
+    margin-right: 20px;
+    max-height: 80px;
+}
+
+.top-text {
+    width: 100%;
+    text-align: center;
+    margin-top: -180px;
+    margin-bottom: 20px;
+}
+
+.Date {
+    width: 100%;
+    text-align: right;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.Date input {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    padding: 15px 15px;
+    border: 1px solid #D9D9D9; 
+    background-color: #D9D9D9;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 550;
+    text-align: center;
+    font-family: Arial, sans-serif; 
+}
+
+.top-droplist {
+    width: 100%;
+    text-align: left;
+    margin-top: -100px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
