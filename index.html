@@ -21,6 +21,7 @@
     <table>
         <head>
             <tr>
+                
                 <th>Date</th>
                 <th>Temperature (°C)</th>
                 <th>Humidity (%)</th>
@@ -35,16 +36,19 @@
 
     <script>
         // API key
-        const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
+  
 
         const currentDate = new Date();
         const formattedTimestamp = currentDate.toISOString();
         console.log(formattedTimestamp);
-        const fifteenMinutesLater = new Date(currentDate.getTime() + 15 * 60000); // 15 minutes in milliseconds
+        const fifteenMinutesLater = new Date(currentDate.getTime() - 10 * 60000);
+        const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
-        console.log(fifteenMinutesLater);
+        console.log(formattedFifteenMinutesLater);
 
-        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime"+fifteenMinutesLater+'&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
+
+        const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
+        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime="+formattedFifteenMinutesLater+"&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
 
 
         // URL
