@@ -57,9 +57,11 @@ body {
 .Date {
     width: 100%;
     text-align: right;
+    /*
     margin-top: 25px;
     margin-bottom: 20px;
     margin-right: 20px;
+    */
 }
 
 .Date input {
@@ -78,7 +80,17 @@ body {
 .top-droplist {
     width: 100%;
     text-align: left;
+    /*
     margin-top: -100px;
     margin-bottom: 20px;
     margin-left: 20px;
+    */
+}
+
+@media screen and (max-width: 500px) {
+  .Date {
+      text-align: left;
+      width: 100%;
+  }
+
 }
