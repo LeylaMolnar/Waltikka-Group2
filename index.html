@@ -40,8 +40,11 @@
         const currentDate = new Date();
         const formattedTimestamp = currentDate.toISOString();
         console.log(formattedTimestamp);
-        
-        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime=2023-09-04T00:00:00Z&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
+        const fifteenMinutesLater = new Date(currentDate.getTime() + 15 * 60000); // 15 minutes in milliseconds
+
+        console.log(fifteenMinutesLater);
+
+        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime"+fifteenMinutesLater+'&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
 
 
         // URL
