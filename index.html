@@ -37,8 +37,15 @@
         // API key
         const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
 
+        const currentDate = new Date();
+        const formattedTimestamp = currentDate.toISOString();
+        console.log(formattedTimestamp);
+        
+        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime=2023-09-04T00:00:00Z&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
+
+
         // URL
-        const apiUrl = 'https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime=2023-09-04T00:00:00Z&endTime=2023-09-06T12:30:00Z&fields=temperature,humidity,co2';
+        const apiUrl = url;
 
         // Create an array to store the API data
         const apiDataArray = [];
