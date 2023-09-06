@@ -14,7 +14,7 @@ body {
     /*width: 95%;*/
     text-align: center;
     padding: 20px;
-    padding-top: 200px;
+    padding-top: 50px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     display: flex;
@@ -50,8 +50,10 @@ body {
 .top-text {
     width: 100%;
     text-align: center;
-    margin-top: -180px;
+    /*margin-top: -180px;*/
     margin-bottom: 20px;
+    padding-right: 50px;
+    padding-left: 50px;
 }
 
 .Date {
@@ -67,6 +69,7 @@ body {
 .Date input {
     margin-bottom: 20px;
     margin-right: 20px;
+    margin-left: 15px;
     padding: 15px 15px;
     border: 1px solid #D9D9D9; 
     background-color: #D9D9D9;
@@ -81,8 +84,7 @@ body {
 .top-droplist {
     width: 100%;
     text-align: left;
-    margin-left: 60px;
-
+    margin-left: 15px;
     /*
     margin-top: -100px;
     margin-bottom: 20px;
@@ -92,8 +94,11 @@ body {
 
 @media screen and (max-width: 500px) {
   .Date {
-      text-align: left;
-      width: 100%;
-  }
+      text-align: center;
 
+  }
+  .top-droplist{
+    text-align: center;
+    margin-left: 0px;
+  }
 }
