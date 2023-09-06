@@ -48,7 +48,7 @@
 
 
         const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
-        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=10&startTime="+formattedFifteenMinutesLater+"&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
+        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=13&startTime="+formattedFifteenMinutesLater+"&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
 
 
         // URL
@@ -99,24 +99,21 @@
 
         // Function to display the data in the table
         function displayData(dataArray) {
-            const dataContainer = document.getElementById('data-container');
-            dataArray.forEach(entry => {
-                const row = document.createElement('tr');
-                const dateCell = document.createElement('td');
-                dateCell.textContent = entry.date;
-                const temperatureCell = document.createElement('td');
-                temperatureCell.textContent = entry.temperature;
-                const humidityCell = document.createElement('td');
-                humidityCell.textContent = entry.humidity;
-                const co2Cell = document.createElement('td');
-                co2Cell.textContent = entry.co2;
-                row.appendChild(dateCell);
-                row.appendChild(temperatureCell);
-                row.appendChild(humidityCell);
-                row.appendChild(co2Cell);
-                dataContainer.appendChild(row);
-            });
-        }
+  const dataContainer = document.getElementById('data-container');
+  
+  dataArray.forEach(entry => {
+    const row = document.createElement('tr');
+
+    // Iterate over the properties you want to display
+    ['temperature', 'humidity', 'co2'].forEach(property => {
+      const cell = document.createElement('td');
+      cell.textContent = entry[property];
+      row.appendChild(cell);
+    });
+
+    dataContainer.appendChild(row);
+  });
+}
 
         // Call the fetchData function when the page loads
         window.onload = fetchData;
