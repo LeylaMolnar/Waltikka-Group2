@@ -68,18 +68,27 @@ body {
     */
 }
 
-.Date input {
+.switch {
     margin-bottom: 20px;
     margin-right: 20px;
     margin-left: 15px;
-    padding: 15px 15px;
-    border: 1px solid #D9D9D9; 
-    background-color: #D9D9D9;
+    width: 260px;
+    padding: 16px !important;
+    border: 1px solid #D9D9D9 !important; 
+    background-color: #D9D9D9 !important;
     border-radius: 15px;
-    font-size: 15px;
-    font-weight: 550;
+    font-size: 17px !important;
+    font-weight: 550 !important;
     text-align: center;
-    font-family: Arial, sans-serif; 
+    font-family: Arial, sans-serif;
+    box-shadow: 3px 3px #3C3C3B;
+    
+}
+
+.switch:hover{
+  background-color: #3C3C3B !important;
+  color: #D9D9D9 !important;
+  box-shadow: 3px 3px #F3F2F1;
 }
 
 .top-droplist {
