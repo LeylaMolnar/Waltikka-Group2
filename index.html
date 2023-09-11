@@ -175,7 +175,6 @@
         let tempMaxThreshold = 23;
         let tempMinThreshold = 20;
         let humidMaxThreshold = 65;
-        //let humidMinThreshold = ;
         let co2MaxThreshold = 550;
 
         if (boxElement) {
@@ -183,29 +182,39 @@
             document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
 
             boxElement.innerHTML = `
-                    <div class="card">
+                    
+            <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">${room.name}</h5>`
+            //temp too high
             if (data[0][1] > tempMaxThreshold) {
               boxElement.innerHTML +=
-                `<p class="card-text">⚠Temperature: ${data[0][1]}⚠</p>`;
+                `<p class="card-text"><span class="blink">⚠</span>Temperature: ${data[0][1]}<span class="blink">⚠</span></p>`;
+            }
+            //temp too low
+            else if (data[0][1] < tempMinThreshold){
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
             }
             else {
               boxElement.innerHTML +=
                 `<p class="card-text">Temperature: ${data[0][1]}</p>`;
             }
+            
 
+            //humid too high
             if (data[0][2] > humidMaxThreshold) {
               boxElement.innerHTML +=
-                `<p class="card-text">⚠Humidity: ${data[0][2]}⚠</p>`;
+                `<p class="card-text"><span class="blink">⚠</span>Humidity: ${data[0][2]}<span class="blink">⚠</span></p>`;
             }
             else {
               boxElement.innerHTML +=
                 `<p class="card-text">Humidity: ${data[0][2]}</p>`;
             }
+            //co2 too high
             if (data[0][3] > co2MaxThreshold) {
               boxElement.innerHTML +=
-                `<p class="card-text">⚠CO2: ${data[0][3]}⚠</p>`;
+                `<p class="card-text"><span class="blink">⚠</span>CO2: ${data[0][3]}<span class="blink">⚠</span></p>`;
             }
             else {
               boxElement.innerHTML +=
@@ -213,7 +222,8 @@
             }
             boxElement.innerHTML += `
                             </div>
-                    </div> `;
+                    </div>
+                     `;
           }
           else {
             boxElement.innerHTML = `
