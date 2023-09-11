@@ -1,66 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Data</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Waltikka</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
+
 <body>
-    <table>
-        <head>
-            <tr>
-                
-                <th>Date</th>
-                <th>Temperature (°C)</th>
-                <th>Humidity (%)</th>
-                <th>CO2 (ppm)</th>
+  <header class="container">
+    <div class="fusion-logo">
+      <a class="fusion-logo-link" href="https://www.waltikka.fi/">
 
-            </tr>
-        </head>
-        <tbody id="data-container">
-            <!-- Data will be displayed here -->
-        </tbody>
-    </table>
+        <img src="https://www.waltikka.fi/wp-content/uploads/logo-2.png"
+          srcset="https://www.waltikka.fi/wp-content/uploads/logo-2.png 1x, https://www.waltikka.fi/wp-content/uploads/waltikka-logo-retina.png 2x"
+          width="243" height="90" style="max-height:90px;height:auto;" alt="Rantahotel Waltikka Logo"
+          data-retina_logo_url="https://www.waltikka.fi/wp-content/uploads/waltikka-logo-retina.png"
+          class="fusion-standard-logo">
+      </a>
+    </div>
+  </header>
+  <div class="white-box2 container justify-content-center">
 
-    <script>
-        // API key
-  
+    <div class="top-text">
+      <h1>Sensors' Dashboard</h1>
 
-        const currentDate = new Date();
-        const formattedTimestamp = currentDate.toISOString();
-        console.log(formattedTimestamp);
-        const fifteenMinutesLater = new Date(currentDate.getTime() - 10 * 60000);
-        const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
+      <div class="row">
+        <div class="col">
+          <div class="top-droplist">
+            <div>
+              <label for="sensor-select" style="font-size: small;">Filter:</label>
+              <br>
+              <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+                <option value="AllSensors">--All Sensors--</option>
+                <option value="Sensor1">Sensor 1</option>
+                <option value="Sensor2">Sensor 2</option>
+                <option value="Sensor3">Sensor 3</option>
+                <option value="Sensor4">Sensor 4</option>
+                <option value="Sensor5">Sensor 5</option>
+                <option value="Sensor6">Sensor 6</option>
+                <option value="Sensor7">Sensor 7</option>
+                <option value="Sensor8">Sensor 8</option>
+                <option value="Sensor9">Sensor 9</option>
+                <option value="Sensor10">Sensor 10</option>
+                <option value="Sensor11">Sensor 11</option>
+                <option value="Sensor12">Sensor 12</option>
+                <option value="Sensor13">Sensor 13</option>
+                <option value="Sensor14">Sensor 14</option>
+                <option value="Sensor15">Sensor 15</option>
+                <option value="Sensor16">Sensor 16</option>
+                <option value="Sensor17">Sensor 17</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="Date">
+            <input style="margin-top: 15px;" type="text" name="datefilter" value="View Historical Data" />
 
-        console.log(formattedFifteenMinutesLater);
+            <script type="text/javascript">
+              $(document).ready(function () {
+                $('input[name="datefilter"]').daterangepicker({
+                  autoUpdateInput: false,
+                  locale: {
+                    cancelLabel: 'Clear'
+                  }
+                });
 
+                $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
+                  $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+                });
 
-        const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
-        const url =  "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata?room-id=13&startTime="+formattedFifteenMinutesLater+"&&endTime="+formattedTimestamp+"&fields=temperature,humidity,co2";
+                $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
+                  $(this).val('');
+                });
+              });
+            </script>
+          </div>
+       
+        </div>
+      </div>
+    </div>
 
+<!-- Script for rooms' data starts here-->
 
-        // URL
-        const apiUrl = url;
+  <script>
+        // Array of room IDs and corresponding names
+        const rooms = [
+            { id: 7, name: "Ala-aula" },
+            { id: 8, name: "209" },
+            { id: 9, name: "Ravintolasali" },
+            { id: 10, name: "109" },
+            { id: 11, name: "307" },
+            { id: 12, name: "Alaravintola" },
+            { id: 13, name: "Vuolle 1" },
+            { id: 14, name: "1. krs narikka" },
+            { id: 15, name: "2. krs aula" },
+            { id: 16, name: "Yläravintola" },
+            { id: 17, name: "Linno 1 ja 2" },
+            { id: 18, name: "129" },
+            { id: 19, name: "126" },
+            { id: 20, name: "229" },
+            { id: 21, name: "226" },
+            { id: 22, name: "326" },
+            { id: 23, name: "Linno 1 ja 2" },
+        ];
 
-        // Create an array to store the API data
-        const apiDataArray = [];
+        // Base URL for the API
+        const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
 
-        // Function to fetch data from the API
-        async function fetchData() {
+        // Function to fetch and display room data
+        async function fetchRoomData(room) {
             try {
-                const response = await fetch(apiUrl, {
+                const currentDate = new Date();
+                const formattedTimestamp = currentDate.toISOString();
+                const fifteenMinutesLater = new Date(currentDate.getTime() - 600 * 60000);
+                const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
+
+                const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
+                const url = `${baseUrl}?room-id=${room.id}&startTime=${formattedFifteenMinutesLater}&endTime=${formattedTimestamp}&fields=temperature,humidity,co2`;
+
+                const response = await fetch(url, {
                     headers: {
                         'x-api-key': apiKey
                     }
@@ -72,23 +143,21 @@
 
                 const responseData = await response.json();
 
-                // Check if responseData has a "series" property with "values"
                 if (Array.isArray(responseData.results)) {
-                    responseData.results.forEach(result => {
-                        if (Array.isArray(result.series)) {
-                            result.series.forEach(series => {
-                                if (Array.isArray(series.values)) {
-                                    series.values.forEach(entry => {
-                                        const [date, temperature, humidity, co2,] = entry;
-                                        apiDataArray.push({ date, temperature, humidity, co2});
-                                    });
-                                }
-                            });
-                        }
-                    });
+                    // Get the first result in the array (assuming there's only one result)
+                    const result = responseData.results[0];
 
-                    // Call a function to display the data in the table
-                    displayData(apiDataArray);
+                    if (Array.isArray(result.series)) {
+                        const series = result.series[0];
+
+                        if (Array.isArray(series.values)) {
+                            const values = series.values;
+                            
+                            localStorage.setItem(`room-${room.id}-data`, JSON.stringify(values));
+                            
+                            displayRoomData(room, values);
+                        }
+                    }
                 } else {
                     console.error('Data structure is not as expected:', responseData);
                 }
@@ -97,26 +166,137 @@
             }
         }
 
-        // Function to display the data in the table
-        function displayData(dataArray) {
-  const dataContainer = document.getElementById('data-container');
-  
-  dataArray.forEach(entry => {
-    const row = document.createElement('tr');
+        // Function to display room data in Bootstrap boxes
+// Function to display room data in Bootstrap boxes
+function displayRoomData(room, data) {
+    const boxId = `box-${room.id}`;
+    const boxElement = document.getElementById(boxId);
 
-    // Iterate over the properties you want to display
-    ['temperature', 'humidity', 'co2'].forEach(property => {
-      const cell = document.createElement('td');
-      cell.textContent = entry[property];
-      row.appendChild(cell);
-    });
-
-    dataContainer.appendChild(row);
-  });
+    if (boxElement) {
+        if (data && data.length > 0) {
+            const mostRecentData = data[data.length - 1]; // Get the last data entry
+            boxElement.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${room.name}</h5>
+                        <p class="card-text">Temperature: ${mostRecentData[1]}</p>
+                        <p class="card-text">Humidity: ${mostRecentData[2]}</p>
+                        <p class="card-text">CO2: ${mostRecentData[3]}</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Display a placeholder message or default values when data is not available
+            boxElement.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${room.name}</h5>
+                        <p class="card-text">Data not available</p>
+                    </div>
+                </div>
+            `;
+        }
+    }
 }
 
-        // Call the fetchData function when the page loads
-        window.onload = fetchData;
+
+        // Function to fetch data for all rooms
+        async function fetchDataForAllRooms() {
+            for (const room of rooms) {
+                const storedData = localStorage.getItem(`room-${room.id}-data`);
+                if (storedData) {
+                    const data = JSON.parse(storedData);
+                    displayRoomData(room, data);
+                } else {
+                    await fetchRoomData(room);
+                }
+            }
+        }
+
+        // This ensures the page is fully loaded before fetching data
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
+        });
     </script>
+
+<!-- Script for rooms' data ends here-->        
+
+    <div class="row justify-content-around container">
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-7">Ala-aula (id-7)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-8">209 (id-8)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-9">Ravintolasali (id-9)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-10">109 (id-10)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-11">307 (id-11)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-12">Alaravintola (id-12)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-13">Vuolle 1 neuvottelutila (id-13)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-14">Ala-aulan narikka (id-14)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-15">2. kerroksen aulatila (id-15)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-16">Yläravintola lavan oikea puoli (id-16)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-17">Linno 1 ja 2 neuvottelutila (id-17)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-18">129 (id-18)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-19">126 (id-19)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-20">229 (id-20)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-21">226 (id-21)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-22">326 (id-22)</div>
+      </div>
+
+      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+        <div class="box" id="box-23">Linno 1 ja 2 neuvottelutila (id-23)</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <footer>
+    <p> </p>
+  </footer>
 </body>
+
 </html>
