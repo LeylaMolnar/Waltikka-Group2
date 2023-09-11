@@ -88,125 +88,169 @@
               });
             </script>
           </div>
-       
+
         </div>
       </div>
     </div>
 
-<!-- Script for rooms' data starts here-->
+    <!-- Script for rooms' data starts here-->
 
 
-  <script>
-        // Array of room IDs and corresponding names
-        const rooms = [
-            { id: 7, name: "Ala-aula" },
-            { id: 8, name: "209" },
-            { id: 9, name: "Ravintolasali" },
-            { id: 10, name: "109" },
-            { id: 11, name: "307" },
-            { id: 12, name: "Alaravintola" },
-            { id: 13, name: "Vuolle 1 neuvottelutila" },
-            { id: 14, name: "Ala-aulan narikka" },
-            { id: 15, name: "2. kerroksen aulatila" },
-            { id: 16, name: "Yläravintola lavan oikea puoli" },
-            { id: 17, name: "Linno 1 ja 2 neuvottelutila" },
-            { id: 18, name: "129" },
-            { id: 19, name: "126" },
-            { id: 20, name: "229" },
-            { id: 21, name: "226" },
-            { id: 22, name: "326" },
-            { id: 23, name: "Linno 1 ja 2 neuvottelutila" },
-        ];
+    <script>
+      // Array of room IDs and corresponding names
+      const rooms = [
+        { id: 7, name: "Ala-aula" },
+        { id: 8, name: "209" },
+        { id: 9, name: "Ravintolasali" },
+        { id: 10, name: "109" },
+        { id: 11, name: "307" },
+        { id: 12, name: "Alaravintola" },
+        { id: 13, name: "Vuolle 1 neuvottelutila" },
+        { id: 14, name: "Ala-aulan narikka" },
+        { id: 15, name: "2. kerroksen aulatila" },
+        { id: 16, name: "Yläravintola lavan oikea puoli" },
+        { id: 17, name: "Linno 1 ja 2 neuvottelutila" },
+        { id: 18, name: "129" },
+        { id: 19, name: "126" },
+        { id: 20, name: "229" },
+        { id: 21, name: "226" },
+        { id: 22, name: "326" },
+        { id: 23, name: "Linno 1 ja 2 neuvottelutila" },
+      ];
 
-        // Base URL for the API
-        const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
+      // Base URL for the API
+      const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
 
-        // Function to fetch and display room data
-        async function fetchRoomData(room) {
-            try {
-                const currentDate = new Date();
-                const formattedTimestamp = currentDate.toISOString();
-                const fifteenMinutesLater = new Date(currentDate.getTime() - 10 * 60000);
-                const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
+      // Function to fetch and display room data
+      async function fetchRoomData(room) {
+        try {
+          const currentDate = new Date();
+          const formattedTimestamp = currentDate.toISOString();
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 10 * 60000);
+          const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
-                const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
-                const url = `${baseUrl}?room-id=${room.id}&startTime=${formattedFifteenMinutesLater}&endTime=${formattedTimestamp}&fields=temperature,humidity,co2`;
+          const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
+          const url = `${baseUrl}?room-id=${room.id}&startTime=${formattedFifteenMinutesLater}&endTime=${formattedTimestamp}&fields=temperature,humidity,co2`;
 
-                const response = await fetch(url, {
-                    headers: {
-                        'x-api-key': apiKey
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const responseData = await response.json();
-
-                if (Array.isArray(responseData.results)) {
-                    // Get the first result in the array (assuming there's only one result)
-                    const result = responseData.results[0];
-
-                    if (Array.isArray(result.series)) {
-                        const series = result.series[0];
-
-                        if (Array.isArray(series.values)) {
-                            const values = series.values;
-                            
-                            localStorage.setItem(`room-${room.id}-data`, JSON.stringify(values));
-                            
-                            displayRoomData(room, values);
-                        }
-                    }
-                } else {
-                    console.error('Data structure is not as expected:', responseData);
-                }
-            } catch (error) {
-                console.error('Error:', error);
+          const response = await fetch(url, {
+            headers: {
+              'x-api-key': apiKey
             }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const responseData = await response.json();
+
+          if (Array.isArray(responseData.results)) {
+            // Get the first result in the array (assuming there's only one result)
+            const result = responseData.results[0];
+
+            if (Array.isArray(result.series)) {
+              const series = result.series[0];
+
+              if (Array.isArray(series.values)) {
+                const values = series.values;
+
+                localStorage.setItem(`room-${room.id}-data`, JSON.stringify(values));
+
+                displayRoomData(room, values);
+              }
+            }
+          } else {
+            console.error('Data structure is not as expected:', responseData);
+          }
+        } catch (error) {
+          console.error('Error:', error);
         }
+      }
 
-        // Function to display room data in Bootstrap boxes
-        function displayRoomData(room, data) {
-            const boxId = `box-${room.id}`;
-            const boxElement = document.getElementById(boxId);
+      // Function to display room data in Bootstrap boxes
+      function displayRoomData(room, data) {
+        const boxId = `box-${room.id}`;
+        const boxElement = document.getElementById(boxId);
 
-            if (boxElement) {
-                boxElement.innerHTML = `
+        let tempMaxThreshold = 23;
+        let tempMinThreshold = 20;
+        let humidMaxThreshold = 65;
+        //let humidMinThreshold = ;
+        let co2MaxThreshold = 550;
+
+        if (boxElement) {
+          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
+            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
+
+            boxElement.innerHTML = `
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">${room.name}</h5>
-                            <p class="card-text">Temperature: ${data[0][1]}</p>
-                            <p class="card-text">Humidity: ${data[0][2]}</p>
-                            <p class="card-text">CO2: ${data[0][3]}</p>
-                        </div>
-                    </div>
-                `;
+                            <h5 class="card-title">${room.name}</h5>`
+            if (data[0][1] > tempMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text">⚠Temperature: ${data[0][1]}⚠</p>`;
             }
-        }
-
-        // Function to fetch data for all rooms
-        async function fetchDataForAllRooms() {
-            for (const room of rooms) {
-                const storedData = localStorage.getItem(`room-${room.id}-data`);
-                if (storedData) {
-                    const data = JSON.parse(storedData);
-                    displayRoomData(room, data);
-                } else {
-                    await fetchRoomData(room);
-                }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
             }
-        }
 
-        // This ensures the page is fully loaded before fetching data
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
-        });
+            if (data[0][2] > humidMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text">⚠Humidity: ${data[0][2]}⚠</p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
+            }
+            if (data[0][3] > co2MaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text">⚠CO2: ${data[0][3]}⚠</p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">CO2: ${data[0][3]}</p>`;
+            }
+            boxElement.innerHTML += `
+                            </div>
+                    </div> `;
+          }
+          else {
+            boxElement.innerHTML = `
+                      <div class="card" style="background-color: #66C1DC !important">
+                          <div class="card-body">
+                              <h5 class="card-title">${room.name}</h5>
+                              <p class="card-text">Temperature: ${data[0][1]}</p>
+                              <p class="card-text">Humidity: ${data[0][2]}</p>
+                              <p class="card-text">CO2: ${data[0][3]}</p>
+                          </div>
+                      </div>
+                  `;
+          }
+        }
+      }
+
+      // Function to fetch data for all rooms
+      async function fetchDataForAllRooms() {
+        for (const room of rooms) {
+          const storedData = localStorage.getItem(`room-${room.id}-data`);
+          if (storedData) {
+            const data = JSON.parse(storedData);
+            displayRoomData(room, data);
+          } else {
+            await fetchRoomData(room);
+          }
+        }
+      }
+
+      // This ensures the page is fully loaded before fetching data
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
+      });
     </script>
 
 
-<!-- Script for rooms' data ends here-->        
+    <!-- Script for rooms' data ends here-->
 
     <div class="row justify-content-around container">
 
@@ -277,7 +321,7 @@
       <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
         <div class="box" id="box-23">Sensor 17</div>
       </div>
-      
+
     </div>
   </div>
 
@@ -287,4 +331,3 @@
 </body>
 
 </html>
-
