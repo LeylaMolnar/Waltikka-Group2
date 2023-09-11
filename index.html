@@ -159,22 +159,39 @@
                         }
                     }
                 } else {
-                    console.error('Data structure is not as expected:', responseData);
+                    console.error('Data structure is not as expected:', responseData);a
                 }
             } catch (error) {
                 console.error('Error:', error);
             }
         }
 
-        // Function to display room data in Bootstrap boxes
-// Function to display room data in Bootstrap boxes
-function displayRoomData(room, data) {
+     
+        
+
+        <!-- Modify the displayRoomData function -->
+
+        function displayRoomData(room, data) {
     const boxId = `box-${room.id}`;
     const boxElement = document.getElementById(boxId);
 
     if (boxElement) {
         if (data && data.length > 0) {
             const mostRecentData = data[data.length - 1]; // Get the last data entry
+            
+            // Format the ISO time to display time before date in Finnish time format
+            const isoTime = mostRecentData[0];
+            const dateObj = new Date(isoTime);
+            const formattedTime = dateObj.toLocaleString('fi-FI', {
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+            const formattedDate = dateObj.toLocaleString('fi-FI', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            });
+
             boxElement.innerHTML = `
                 <div class="card">
                     <div class="card-body">
@@ -182,9 +199,10 @@ function displayRoomData(room, data) {
                         <p class="card-text">Temperature: ${mostRecentData[1]}</p>
                         <p class="card-text">Humidity: ${mostRecentData[2]}</p>
                         <p class="card-text">CO2: ${mostRecentData[3]}</p>
+                        <p class="card-text">  ${formattedDate} ${formattedTime}</p>
                     </div>
                 </div>
-            `;
+            `
         } else {
             // Display a placeholder message or default values when data is not available
             boxElement.innerHTML = `
