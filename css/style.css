@@ -58,7 +58,7 @@ body {
     padding-left: 50px;
 }
 
-.Date {
+.switchDiv {
     width: 100%;
     text-align: right;
     /*
@@ -103,9 +103,11 @@ body {
 }
 
 @media screen and (max-width: 500px) {
-  .Date {
-      text-align: center;
-
+  .switch {
+      width: auto;
+  }
+  .switchDiv{
+    text-align: center;
   }
   .top-droplist{
     text-align: center;
