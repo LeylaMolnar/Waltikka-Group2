@@ -130,7 +130,7 @@
         try {
           const currentDate = new Date();
           const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 10 * 60000);
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 600 * 60000);
           const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
           const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
@@ -173,76 +173,78 @@
 
       // Function to display room data in Bootstrap boxes
       function displayRoomData(room, data) {
-        const boxId = `box-${room.id}`;
-        const boxElement = document.getElementById(boxId);
+    const boxId = `box-${room.id}`;
+    const boxElement = document.getElementById(boxId);
 
-        let tempMaxThreshold = 23;
-        let tempMinThreshold = 20;
-        let humidMaxThreshold = 65;
-        let co2MaxThreshold = 550;
-
-        if (boxElement) {
-          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
-            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
-
-            boxElement.innerHTML = `
-                    
-            <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${room.name}</h5>`
-            //temp too high
-            if (data[0][1] > tempMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
-            }
-            //temp too low
-            else if (data[0][1] < tempMinThreshold){
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
-            }
+    if (boxElement) {
+        if (data && data.length > 0) {
+            const mostRecentData = data[data.length - 1]; // Get the last data entry
             
+            // Format the ISO time to display time before date in Finnish time format
+            const isoTime = mostRecentData[0];
+            const dateObj = new Date(isoTime);
+            const formattedTime = dateObj.toLocaleString('fi-FI', {
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+            const formattedDate = dateObj.toLocaleString('fi-FI', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            });
 
-            //humid too high
-            if (data[0][2] > humidMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
+            let temperatureText = `Temperature: ${mostRecentData[1]}`;
+            let humidityText = `Humidity: ${mostRecentData[2]}`;
+            let co2Text = `CO2: ${mostRecentData[3]}`;
+
+            if (mostRecentData[1] > 23 || mostRecentData[1] < 20 || mostRecentData[2] > 65 || mostRecentData[3] > 550) {
+                boxElement.style.backgroundColor = "#F66D6E";
+                //temp too high
+                if (mostRecentData[1] > 23) {
+                    temperatureText = `<span class="blink">🔥</span>Temperature: ${mostRecentData[1]}<span class="blink">🔥</span>`;
+                }
+                //temp too low
+                else if (mostRecentData[1] < 20){
+                    temperatureText = `<span class="blink">❄</span>Temperature: ${mostRecentData[1]}<span class="blink">❄</span>`;
+                }
+
+                //humid too high
+                if (mostRecentData[2] > 65) {
+                    humidityText = `<span class="blink">💧</span>Humidity: ${mostRecentData[2]}<span class="blink">💧</span>`;
+                }
+
+                //co2 too high
+                if (mostRecentData[3] > 550) {
+                    co2Text = `<span class="blink">💀</span>CO2: ${mostRecentData[3]}<span class="blink">💀</span>`;
+                }
             }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
-            }
-            //co2 too high
-            if (data[0][3] > co2MaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">CO2: ${data[0][3]}</p>`;
-            }
-            boxElement.innerHTML += `
-                            </div>
-                    </div>
-                     `;
-          }
-          else {
+
             boxElement.innerHTML = `
-                      <div class="card" style="background-color: #66C1DC !important">
-                          <div class="card-body">
-                              <h5 class="card-title">${room.name}</h5>
-                              <p class="card-text">Temperature: ${data[0][1]}</p>
-                              <p class="card-text">Humidity: ${data[0][2]}</p>
-                              <p class="card-text">CO2: ${data[0][3]}</p>
-                          </div>
-                      </div>
-                  `;
-          }
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${room.name}</h5>
+                        <p class="card-text">${temperatureText}</p>
+                        <p class="card-text">${humidityText}</p>
+                        <p class="card-text">${co2Text}</p>
+                        <p class="card-text">${formattedTime}  ${formattedDate}</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Display a placeholder message or default values when data is not available
+            boxElement.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${room.name}</h5>
+                        <p class="card-text">Data not available</p>
+                    </div>
+                </div>
+            `;
         }
-      }
+    }
+}
+
+
 
       // Function to fetch data for all rooms
       async function fetchDataForAllRooms() {
