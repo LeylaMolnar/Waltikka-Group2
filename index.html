@@ -66,26 +66,30 @@
           </div>
         </div>
         <div class="col">
-          <div class="Date">
-            <input style="margin-top: 15px;" type="text" name="datefilter" value="View Historical Data" />
-
-            <script type="text/javascript">
-              $(document).ready(function () {
-                $('input[name="datefilter"]').daterangepicker({
-                  autoUpdateInput: false,
-                  locale: {
-                    cancelLabel: 'Clear'
-                  }
-                });
-
-                $('input[name="datefilter"]').on('apply.daterangepicker', function (ev, picker) {
-                  $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-                });
-
-                $('input[name="datefilter"]').on('cancel.daterangepicker', function (ev, picker) {
-                  $(this).val('');
-                });
-              });
+          <div class="switchDiv">
+            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;" type="text" name="datefilter">View Historical Data</button>
+            <script>
+            function toggleHistorical() {
+              var btn = document.getElementById("btn");
+              if (btn.innerHTML === "View Historical Data") {
+                btn.innerHTML = "View Real-time Dashboard";
+              } else {
+                btn.innerHTML = "View Historical Data";
+              }
+              
+              var x = document.getElementById("powerBI");
+              if (x.style.display === "none") {
+                x.style.display = "block";
+              } else {
+                x.style.display = "none";
+              }
+              var y = document.getElementById("realTime");
+              if (y.style.display === "none") {
+                y.style.display = "flex";
+              } else {
+                y.style.display = "none";
+              }
+            }
             </script>
           </div>
 
@@ -175,7 +179,6 @@
         let tempMaxThreshold = 23;
         let tempMinThreshold = 20;
         let humidMaxThreshold = 65;
-        //let humidMinThreshold = ;
         let co2MaxThreshold = 550;
 
         if (boxElement) {
@@ -183,29 +186,39 @@
             document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
 
             boxElement.innerHTML = `
-                    <div class="card">
+                    
+            <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">${room.name}</h5>`
+            //temp too high
             if (data[0][1] > tempMaxThreshold) {
               boxElement.innerHTML +=
-                `<p class="card-text">⚠Temperature: ${data[0][1]}⚠</p>`;
+                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
+            }
+            //temp too low
+            else if (data[0][1] < tempMinThreshold){
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
             }
             else {
               boxElement.innerHTML +=
                 `<p class="card-text">Temperature: ${data[0][1]}</p>`;
             }
+            
 
+            //humid too high
             if (data[0][2] > humidMaxThreshold) {
               boxElement.innerHTML +=
-                `<p class="card-text">⚠Humidity: ${data[0][2]}⚠</p>`;
+                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
             }
             else {
               boxElement.innerHTML +=
                 `<p class="card-text">Humidity: ${data[0][2]}</p>`;
             }
+            //co2 too high
             if (data[0][3] > co2MaxThreshold) {
               boxElement.innerHTML +=
-                `<p class="card-text">⚠CO2: ${data[0][3]}⚠</p>`;
+                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
             }
             else {
               boxElement.innerHTML +=
@@ -213,7 +226,7 @@
             }
             boxElement.innerHTML += `
                             </div>
-                    </div> `;
+                    </div>`;
           }
           else {
             boxElement.innerHTML = `
@@ -250,9 +263,13 @@
     </script>
 
 
+
+<!--Sample powerBI report-->
+<iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25" src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+
     <!-- Script for rooms' data ends here-->
 
-    <div class="row justify-content-around container">
+    <div id="realTime" class="row justify-content-around container">
 
       <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
         <div class="box" id="box-7">Sensor 1</div>
