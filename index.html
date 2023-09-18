@@ -101,6 +101,7 @@
 
 
     <script>
+      
       // Array of room IDs and corresponding names
       const rooms = [
         { id: 7, name: "Ala-aula" },
@@ -130,9 +131,9 @@
         try {
           const currentDate = new Date();
           const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 600 * 60000);
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 7 * 24 *  60 * 60000);
           const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
-
+          240
           const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
           const url = `${baseUrl}?room-id=${room.id}&startTime=${formattedFifteenMinutesLater}&endTime=${formattedTimestamp}&fields=temperature,humidity,co2`;
 
@@ -192,30 +193,80 @@
                 month: '2-digit',
                 day: '2-digit',
             });
+                      // Initialize variables for sum and count of temperature values
+            let sumTemperature = 0;
+            let countTemperature = 0;
 
-            let temperatureText = `Temperature: ${mostRecentData[1]}`;
-            let humidityText = `Humidity: ${mostRecentData[2]}`;
+            // Iterate through data to extract and sum up temperature values
+            data.forEach((dataEntry) => {
+                // Extract the temperature value from mostRecentData[1]
+                const temperature = dataEntry[1];
+
+                // Add the temperature value to the sum
+                sumTemperature += temperature;
+
+                // Increment the count of temperature values
+                countTemperature++;
+            });
+            
+            let sumHumidity = 0;
+            let countHumidity = 0;
+
+            // Iterate through data to extract and sum up temperature values
+            data.forEach((dataEntry) => {
+                // Extract the temperature value from mostRecentData[1]
+                const humidity = dataEntry[2];
+
+                // Add the temperature value to the sum
+                sumHumidity += humidity;
+
+                // Increment the count of temperature values
+                countHumidity++;
+            });
+
+            let sumCo2 = 0;
+            let countCo2 = 0;
+
+            // Iterate through data to extract and sum up temperature values
+            data.forEach((dataEntry) => {
+                // Extract the temperature value from mostRecentData[1]
+                const co2 = dataEntry[3];
+
+                // Add the temperature value to the sum
+                sumCo2 += co2;
+
+                // Increment the count of temperature values
+                countCo2++;
+            });
+            // Calculate the mean temperature
+            const temperature = (sumTemperature / countTemperature).toFixed(1);
+            const humidity = (sumHumidity / countHumidity).toFixed(0);
+            const co2 = (sumCo2 / countCo2).toFixed(0);
+
+
+            let temperatureText = `Temperature: ${temperature}`;
+            let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
-            if (mostRecentData[1] > 23 || mostRecentData[1] < 20 || mostRecentData[2] > 65 || mostRecentData[3] > 550) {
+            if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
                 boxElement.style.backgroundColor = "#F66D6E";
                 //temp too high
-                if (mostRecentData[1] > 23) {
-                    temperatureText = `<span class="blink">🔥</span>Temperature: ${mostRecentData[1]}<span class="blink">🔥</span>`;
+                if (temperature > 23) {
+                    temperatureText = `<span class="blink">🔥</span>Temperature: ${temperature}<span class="blink">🔥</span>`;
                 }
                 //temp too low
-                else if (mostRecentData[1] < 20){
-                    temperatureText = `<span class="blink">❄</span>Temperature: ${mostRecentData[1]}<span class="blink">❄</span>`;
+                else if (temperature < 20){
+                    temperatureText = `<span class="blink">❄</span>Temperature: ${temperature}<span class="blink">❄</span>`;
                 }
 
                 //humid too high
-                if (mostRecentData[2] > 65) {
-                    humidityText = `<span class="blink">💧</span>Humidity: ${mostRecentData[2]}<span class="blink">💧</span>`;
+                if (humidity > 65) {
+                    humidityText = `<span class="blink">💧</span>Humidity: ${humidity}<span class="blink">💧</span>`;
                 }
 
                 //co2 too high
-                if (mostRecentData[3] > 550) {
-                    co2Text = `<span class="blink">💀</span>CO2: ${mostRecentData[3]}<span class="blink">💀</span>`;
+                if (co2 > 550) {
+                    co2Text = `<span class="blink">💀</span>CO2: ${co2}<span class="blink">💀</span>`;
                 }
             }
 
