@@ -67,29 +67,30 @@
         </div>
         <div class="col">
           <div class="switchDiv">
-            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;" type="text" name="datefilter">View Historical Data</button>
+            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;"
+              type="text" name="datefilter">View Historical Data</button>
             <script>
-            function toggleHistorical() {
-              var btn = document.getElementById("btn");
-              if (btn.innerHTML === "View Historical Data") {
-                btn.innerHTML = "View Real-time Dashboard";
-              } else {
-                btn.innerHTML = "View Historical Data";
+              function toggleHistorical() {
+                var btn = document.getElementById("btn");
+                if (btn.innerHTML === "View Historical Data") {
+                  btn.innerHTML = "View Real-time Dashboard";
+                } else {
+                  btn.innerHTML = "View Historical Data";
+                }
+
+                var x = document.getElementById("powerBI");
+                if (x.style.display === "none") {
+                  x.style.display = "block";
+                } else {
+                  x.style.display = "none";
+                }
+                var y = document.getElementById("realTime");
+                if (y.style.display === "none") {
+                  y.style.display = "flex";
+                } else {
+                  y.style.display = "none";
+                }
               }
-              
-              var x = document.getElementById("powerBI");
-              if (x.style.display === "none") {
-                x.style.display = "block";
-              } else {
-                x.style.display = "none";
-              }
-              var y = document.getElementById("realTime");
-              if (y.style.display === "none") {
-                y.style.display = "flex";
-              } else {
-                y.style.display = "none";
-              }
-            }
             </script>
           </div>
 
@@ -196,7 +197,7 @@
                 `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
             }
             //temp too low
-            else if (data[0][1] < tempMinThreshold){
+            else if (data[0][1] < tempMinThreshold) {
               boxElement.innerHTML +=
                 `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
             }
@@ -204,7 +205,7 @@
               boxElement.innerHTML +=
                 `<p class="card-text">Temperature: ${data[0][1]}</p>`;
             }
-            
+
 
             //humid too high
             if (data[0][2] > humidMaxThreshold) {
@@ -265,8 +266,9 @@
 
 
 
-<!--Sample powerBI report-->
-<iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25" src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+    <!--Sample powerBI report-->
+    <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
+      src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
 
     <!-- Script for rooms' data ends here-->
 
