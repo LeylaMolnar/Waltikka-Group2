@@ -93,7 +93,7 @@
       </div>
     </div>
 
-<!-- Script for rooms' data starts here-->
+<!-- API's script starts here-->
 
   <script>
         // Array of room IDs and corresponding names
@@ -116,7 +116,7 @@
             { id: 22, name: "326" },
             { id: 23, name: "Linno 1 ja 2" },
         ];
-
+        
         // Base URL for the API
         const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
 
@@ -136,7 +136,7 @@
                         'x-api-key': apiKey
                     }
                 });
-
+                
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -165,7 +165,7 @@
                 console.error('Error:', error);
             }
         }
-
+        
         // Function to display room data in Bootstrap boxes
         function displayRoomData(room, data) {
             const boxId = `box-${room.id}`;
@@ -204,7 +204,7 @@
         });
     </script>
 
-<!-- Script for rooms' data ends here-->        
+<!-- API's script ends here-->        
 
     <div class="row justify-content-around container">
 
