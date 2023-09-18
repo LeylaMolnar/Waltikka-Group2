@@ -244,8 +244,14 @@
         }
       }
 
+
+      //for testing
+      let counter = 0;
+      let reset = 0;
+
       // Function to fetch data for all rooms
       async function fetchDataForAllRooms() {
+        localStorage.clear();
         for (const room of rooms) {
           const storedData = localStorage.getItem(`room-${room.id}-data`);
           if (storedData) {
@@ -255,12 +261,34 @@
             await fetchRoomData(room);
           }
         }
+
+
+
+        //For testing
+        document.getElementById("counter").innerHTML = counter + "seconds";
+        counter++;
+
+        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
+        for (let i = 7; i <= 23; i++) {
+          
+          if (localStorage.getItem(`room-${i}-data`) === null) {
+            //alert(localStorage.getItem(`room-15-data`));
+            //document.getElementById("log").innerHTML += new Date().toLocaleTimeString();
+            document.getElementById("log").innerHTML += `${i} `;
+          }
+          
+        }
+        document.getElementById("log").innerHTML += `</p>`;
       }
 
       // This ensures the page is fully loaded before fetching data
       document.addEventListener('DOMContentLoaded', () => {
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
+      //setInterval(fetchDataForAllRooms(), 100);
+
+      setInterval(() => fetchDataForAllRooms(), 10000);
+      
     </script>
 
 
@@ -268,8 +296,6 @@
     <!--Sample powerBI report-->
     <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
       src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
-
-    <!-- Script for rooms' data ends here-->
 
     <!--Dismissing alerts-->
     <script>
@@ -280,19 +306,11 @@
         const boxElement = document.getElementById(boxId);
         boxElement.style.backgroundColor = "#66C1DC";
         boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert).replaceAll(/<placeholder>/g, staticAlert);
-/*
-        const original = boxElement.innerHTML;
-        let newOne = original.substring(0, original.lastIndexOf("roomName\">")) + staticAlert + original.substring(original.lastIndexOf("roomName\">"));
-          alert("pls");
-        boxElement.innerHTML = newOne;
-        */
       }
 
     </script>
-    <!--Dismissing ends here-->
 
     <!--Dashboard layout-->
-    <!---->
     <div id="realTime" class="row justify-content-around container">
 
       <script>
@@ -305,81 +323,12 @@
 
         }
       </script>
-
-      <!--
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-7" onclick="dismissAlert(this.id)">Sensor 1</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-8" onclick="dismissAlert(this.id)">Sensor 2</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-9" onclick="dismissAlert(this.id)">Sensor 3</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-10">Sensor 4</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-11">Sensor 5</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-12">Sensor 6</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-13">Sensor 7</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-14">Sensor 8</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-15">Sensor 9</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-16">Sensor 10</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-17">Sensor 11</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-18">Sensor 12</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-19">Sensor 13</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-20">Sensor 14</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-21">Sensor 15</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-22">Sensor 16</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-23">Sensor 17</div>
-      </div>
--->
     </div>
   </div>
 
   <footer>
-    <p> </p>
+    <div id="counter"></div>
+    <div id="log">pain</div>
   </footer>
 </body>
 
