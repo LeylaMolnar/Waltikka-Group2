@@ -67,29 +67,30 @@
         </div>
         <div class="col">
           <div class="switchDiv">
-            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;" type="text" name="datefilter">View Historical Data</button>
+            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;"
+              type="text" name="datefilter">View Historical Data</button>
             <script>
-            function toggleHistorical() {
-              var btn = document.getElementById("btn");
-              if (btn.innerHTML === "View Historical Data") {
-                btn.innerHTML = "View Real-time Dashboard";
-              } else {
-                btn.innerHTML = "View Historical Data";
+              function toggleHistorical() {
+                var btn = document.getElementById("btn");
+                if (btn.innerHTML === "View Historical Data") {
+                  btn.innerHTML = "View Real-time Dashboard";
+                } else {
+                  btn.innerHTML = "View Historical Data";
+                }
+
+                var x = document.getElementById("powerBI");
+                if (x.style.display === "none") {
+                  x.style.display = "block";
+                } else {
+                  x.style.display = "none";
+                }
+                var y = document.getElementById("realTime");
+                if (y.style.display === "none") {
+                  y.style.display = "flex";
+                } else {
+                  y.style.display = "none";
+                }
               }
-              
-              var x = document.getElementById("powerBI");
-              if (x.style.display === "none") {
-                x.style.display = "block";
-              } else {
-                x.style.display = "none";
-              }
-              var y = document.getElementById("realTime");
-              if (y.style.display === "none") {
-                y.style.display = "flex";
-              } else {
-                y.style.display = "none";
-              }
-            }
             </script>
           </div>
 
@@ -130,7 +131,7 @@
         try {
           const currentDate = new Date();
           const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 10 * 60000);
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 30 * 60000);
           const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
           const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
@@ -182,11 +183,10 @@
         let co2MaxThreshold = 550;
 
         if (boxElement) {
+          //Visual alerts
           if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
             document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
-
-            boxElement.innerHTML = `
-                    
+            boxElement.innerHTML = `                  
             <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">${room.name}</h5>`
@@ -196,7 +196,7 @@
                 `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
             }
             //temp too low
-            else if (data[0][1] < tempMinThreshold){
+            else if (data[0][1] < tempMinThreshold) {
               boxElement.innerHTML +=
                 `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
             }
@@ -204,7 +204,6 @@
               boxElement.innerHTML +=
                 `<p class="card-text">Temperature: ${data[0][1]}</p>`;
             }
-            
 
             //humid too high
             if (data[0][2] > humidMaxThreshold) {
@@ -226,8 +225,10 @@
             }
             boxElement.innerHTML += `
                             </div>
-                    </div>`;
+                    </div>
+                     `;
           }
+          //No alerts
           else {
             boxElement.innerHTML = `
                       <div class="card" style="background-color: #66C1DC !important">
@@ -243,8 +244,14 @@
         }
       }
 
+
+      //for testing
+      let counter = 0;
+      let reset = 0;
+
       // Function to fetch data for all rooms
       async function fetchDataForAllRooms() {
+        localStorage.clear();
         for (const room of rooms) {
           const storedData = localStorage.getItem(`room-${room.id}-data`);
           if (storedData) {
@@ -254,96 +261,71 @@
             await fetchRoomData(room);
           }
         }
+
+        //Log for testing
+        /*
+        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
+        for (let i = 7; i <= 23; i++) {
+
+          if (localStorage.getItem(`room-${i}-data`) === null) {
+            document.getElementById("log").innerHTML += `${i} `;
+          }
+
+        }
+        document.getElementById("log").innerHTML += `</p>`;
+        */
+        //Log for testing over 
       }
 
       // This ensures the page is fully loaded before fetching data
       document.addEventListener('DOMContentLoaded', () => {
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
+
+      //Fetch data every 10 seconds
+      //CHANGE THIS VALUE LATER
+      setInterval(() => fetchDataForAllRooms(), 10000);
+
     </script>
 
+    <!--Sample powerBI report-->
+    <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
+      src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
 
+    <!--Dismissing alerts-->
+    <script>
 
-<!--Sample powerBI report-->
-<iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25" src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+      function dismissAlert(boxId) {
+        //Replace blinking icon with static '!'
+        const staticAlert = "<b> ! </b>";
+        const boxElement = document.getElementById(boxId);
+        boxElement.style.backgroundColor = "#66C1DC";
+        boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
+      }
 
-    <!-- Script for rooms' data ends here-->
+    </script>
 
+    <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-7">Sensor 1</div>
-      </div>
+      <script>
+        for (let id = 7; id <= 23; id++) {
+          document.getElementById("realTime").innerHTML += `
+            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+            </div>
+            `;
 
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-8">Sensor 2</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-9">Sensor 3</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-10">Sensor 4</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-11">Sensor 5</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-12">Sensor 6</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-13">Sensor 7</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-14">Sensor 8</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-15">Sensor 9</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-16">Sensor 10</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-17">Sensor 11</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-18">Sensor 12</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-19">Sensor 13</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-20">Sensor 14</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-21">Sensor 15</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-22">Sensor 16</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-23">Sensor 17</div>
-      </div>
-
+        }
+      </script>
     </div>
   </div>
 
   <footer>
-    <p> </p>
+    <!--Log for testing
+    <div id="counter"></div>
+    <div id="log">pain</div>
+    -->
   </footer>
 </body>
 
