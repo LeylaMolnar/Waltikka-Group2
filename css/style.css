@@ -1,17 +1,11 @@
 body {
     background-color: #3C3C3B !important; 
-    /*
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    */
     height: 100vh;
     margin: 0;
 }
 
 .white-box2 {
     background-color: #F3F2F1;
-    /*width: 95%;*/
     text-align: center;
     padding: 20px;
     padding-top: 50px;
@@ -26,17 +20,19 @@ body {
 
 .box {
     background-color: #66C1DC;
-    /*width: calc(22% - 10px);*/
     width: 270px;
     height: 220px;
     text-align: center;
     padding-top: 20px;
     padding-left: 10px;
     padding-right: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
     margin: 20px 20px;
+
+    /*For dismissing*/
+    transition: all 0.6s;
 }
 
 .fusion-logo {
@@ -52,7 +48,6 @@ body {
 .top-text {
     width: 100%;
     text-align: center;
-    /*margin-top: -180px;*/
     margin-bottom: 20px;
     padding-right: 50px;
     padding-left: 50px;
@@ -61,11 +56,6 @@ body {
 .switchDiv {
     width: 100%;
     text-align: right;
-    /*
-    margin-top: 25px;
-    margin-bottom: 20px;
-    margin-right: 20px;
-    */
 }
 
 .switch {
@@ -95,11 +85,6 @@ body {
     width: 100%;
     text-align: left;
     margin-left: 15px;
-    /*
-    margin-top: -100px;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    */
 }
 
 @media screen and (max-width: 500px) {
@@ -126,7 +111,6 @@ body {
 }
 
 
-/*testing*/
 .blink {
   animation: blink-animation 1s steps(5, start) infinite;
   -webkit-animation: blink-animation 1s steps(5, start) infinite;
