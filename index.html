@@ -253,6 +253,21 @@
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
+            // Checks rooms' conditions and display alerts
+            if (mostRecentData[1] > 23) {
+              window.alert(`Temperature is too high in ${room.name}: ${mostRecentData[1]}`);
+            } else if (mostRecentData[1] < 20) {
+              window.alert(`Temperature is too low in ${room.name}: ${mostRecentData[1]}`);
+            }
+
+            if (mostRecentData[2] > 65) {
+              window.alert(`Humidity is too high in ${room.name}: ${mostRecentData[2]}`);
+            }
+
+            if (mostRecentData[3] > 550) {
+              window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
+            }
+
             if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
