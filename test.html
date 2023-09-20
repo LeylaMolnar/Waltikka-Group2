@@ -297,65 +297,55 @@
     <div id="realTime" class="row justify-content-around container">
 
       <script>
-        const sensorGroups = {
+    const sensorGroups = {
+      Sensor6: 'GroupA',
       Sensor7: 'GroupA',
       Sensor8: 'GroupA',
       Sensor9: 'GroupA',
-      Sensor10: 'GroupA',
+      Sensor10: 'GroupB',
       Sensor11: 'GroupB',
       Sensor12: 'GroupB',
       Sensor13: 'GroupB',
-      Sensor14: 'GroupB',
+      Sensor14: 'GroupC',
       Sensor15: 'GroupC',
       Sensor16: 'GroupC',
       Sensor17: 'GroupC',
-      Sensor18: 'GroupC',
+      Sensor18: 'GroupD',
       Sensor19: 'GroupD',
       Sensor20: 'GroupD',
       Sensor21: 'GroupD',
       Sensor22: 'GroupD',
       Sensor23: 'GroupD',
-
       // Define group assignments for each sensor
+    };
+
+    const groupSensorOrder = {
+      GroupA: ['Sensor6', 'Sensor7', 'Sensor8', 'Sensor9'],
+      GroupB: ['Sensor11', 'Sensor12', 'Sensor13', 'Sensor14'],
+      GroupC: ['Sensor15', 'Sensor16', 'Sensor17', 'Sensor18', 'Sensor23', 'Sensor22', 'Sensor6'],
+      GroupD: ['Sensor19', 'Sensor20', 'Sensor21', 'Sensor22', 'Sensor23'],
+      // Define the order of sensors within each group
     };
 
     // Function to update the visibility of sensor boxes based on the selected group
     function updateSensorVisibility(selectedGroup) {
       const sensorBoxes = document.querySelectorAll('.box');
-let boxesToShow = [];
-          let row = [];
+      let shouldShowAll = false;
+
+      if (selectedGroup === 'AllGroups') {
+        shouldShowAll = true;
+      }
 
       sensorBoxes.forEach((box) => {
         const sensorId = parseInt(box.id.split('-')[1]);
         const group = sensorGroups[`Sensor${sensorId}`];
 
-        if (selectedGroup === 'AllGroups' || selectedGroup === group) {
-row.push(box);
-              if (row.length >= 4) {
-                boxesToShow.push(row);
-                row = [];
-              }
-            }
-          });
-      
-          if (row.length > 0) {
-            boxesToShow.push(row);
-          }
-      
-          sensorBoxes.forEach((box) => {
-            box.style.display = 'none';
-          });
-      
-          boxesToShow.forEach((row, index) => {
-            row.forEach((box) => {
+        if (shouldShowAll || selectedGroup === group) {
           box.style.display = 'block';
-if (index > 0) {
-                box.style.marginLeft = '0px'; // Adjust margin for boxes in rows after the first row
         } else {
-          box.style.marginLeft = '0';
+          box.style.display = 'none';
         }
       });
-});
     }
 
     // Add an event listener to the group dropdown menu
@@ -366,7 +356,7 @@ if (index > 0) {
     });
 
     // Generate the sensor boxes initially
-    for (let id = 7; id <= 23; id++) {
+    for (let id = 6; id <= 23; id++) {
       const sensorBox = document.createElement('div');
       sensorBox.className = 'col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center';
       sensorBox.innerHTML = `
@@ -377,9 +367,7 @@ if (index > 0) {
 
     // Set the initial visibility based on the selected group
     updateSensorVisibility(groupSelect.value);
-      </script>
-    </div>
-  </div>
+  </script>
 
   <footer>
     <!--Log for testing
