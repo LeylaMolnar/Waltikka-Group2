@@ -1,147 +1,392 @@
 <!DOCTYPE html>
-<html>
-<style>
-/* Style the filterable elements */
-.filterDiv {
-  display: none;
-  float: left;
-  background-color: #2196F3;
-  color: white;
-  width: 100px;
-  line-height: 100px;
-  text-align: center;
-  margin: 2px;
-}
+<html lang="en">
 
-.show {
-  display: block;
-}
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Waltikka</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+</head>
 
-.container {
-  margin-top: 20px;
-  overflow: hidden;
-}
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-.btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-}
-
-/* Style the dropdown content (hidden by default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-/* Style the dropdown buttons as blocks */
-.dropdown-content button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 10px;
-  border: none;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  white-space: nowrap; /* Prevent button text from wrapping */
-}
-
-/* Hover effect on dropdown buttons */
-.dropdown-content button:hover {
-  background-color: #ddd;
-}
-
-/* Active button style */
-.dropdown-content button.active {
-  background-color: #666;
-  color: white;
-}
-</style>
 <body>
+  <header class="container">
+    <div class="fusion-logo">
+      <a class="fusion-logo-link" href="https://www.waltikka.fi/">
 
-<h2>Filter DIV Elements</h2>
+        <img src="https://www.waltikka.fi/wp-content/uploads/logo-2.png"
+          srcset="https://www.waltikka.fi/wp-content/uploads/logo-2.png 1x, https://www.waltikka.fi/wp-content/uploads/waltikka-logo-retina.png 2x"
+          width="243" height="90" style="max-height:90px;height:auto;" alt="Rantahotel Waltikka Logo"
+          data-retina_logo_url="https://www.waltikka.fi/wp-content/uploads/waltikka-logo-retina.png"
+          class="fusion-standard-logo">
+      </a>
+    </div>
+  </header>
+  <div class="white-box2 container justify-content-center">
 
-<div class="dropdown">
-    <select class="btn" onchange="filterSelection(this.value)">
-        <option value="all">Show all</option>
-        <option value="cars">Cars</option>
-        <option value="animals">Animals</option>
-        <option value="fruits">Fruits</option>
-        <option value="colors">Colors</option>
-    </select>
-</div>
+    <div class="top-text">
+      <h1>Sensors' Dashboard</h1>
+
+      <div class="row">
+        <div class="col">
+          <div class="top-droplist">
+            <div>
+              <label for="group-select" style="font-size: small;">Filter by Group:</label>
+              <br>
+              <select name="SensorGroups" id="group-select" style="padding: 15px 35px;">
+                <option value="AllGroups">--All Groups--</option>
+                <option value="GroupA">Group A</option>
+                <option value="GroupB">Group B</option>
+<option value="GroupC">Group C</option>
+                <option value="GroupD">Group D</option>
+                                <!-- Add more group options as needed -->
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="switchDiv">
+            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;"
+              type="text" name="datefilter">View Historical Data</button>
+            <script>
+              function toggleHistorical() {
+                var btn = document.getElementById("btn");
+                if (btn.innerHTML === "View Historical Data") {
+                  btn.innerHTML = "View Real-time Dashboard";
+                } else {
+                  btn.innerHTML = "View Historical Data";
+                }
+
+                var x = document.getElementById("powerBI");
+                if (x.style.display === "none") {
+                  x.style.display = "block";
+                } else {
+                  x.style.display = "none";
+                }
+                var y = document.getElementById("realTime");
+                if (y.style.display === "none") {
+                  y.style.display = "flex";
+                } else {
+                  y.style.display = "none";
+                }
+              }
+            </script>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Script for rooms' data starts here-->
 
 
-<div class="container">
-  <div class="filterDiv cars">BMW</div>
-  <div class="filterDiv colors fruits">Orange</div>
-  <div class="filterDiv cars">Volvo</div>
-  <div class="filterDiv colors">Red</div>
-  <div class="filterDiv cars">Ford</div>
-  <div class="filterDiv colors">Blue</div>
-  <div class="filterDiv animals">Cat</div>
-  <div class="filterDiv animals">Dog</div>
-  <div class="filterDiv fruits">Melon</div>
-  <div class="filterDiv fruits animals">Kiwi</div>
-  <div class="filterDiv fruits">Banana</div>
-  <div class="filterDiv fruits">Lemon</div>
-  <div class="filterDiv animals">Cow</div>
-</div>
+    <script>
+      // Array of room IDs and corresponding names
+      const rooms = [
+        { id: 7, name: "Ala-aula" },
+        { id: 8, name: "209" },
+        { id: 9, name: "Ravintolasali" },
+        { id: 10, name: "109" },
+        { id: 11, name: "307" },
+        { id: 12, name: "Alaravintola" },
+        { id: 13, name: "Vuolle 1 neuvottelutila" },
+        { id: 14, name: "Ala-aulan narikka" },
+        { id: 15, name: "2. kerroksen aulatila" },
+        { id: 16, name: "Yläravintola lavan oikea puoli" },
+        { id: 17, name: "Linno 1 ja 2 neuvottelutila" },
+        { id: 18, name: "129" },
+        { id: 19, name: "126" },
+        { id: 20, name: "229" },
+        { id: 21, name: "226" },
+        { id: 22, name: "326" },
+        { id: 23, name: "Linno 1 ja 2 neuvottelutila" },
+      ];
 
-<script>
-var dropdownVisible = false;
+      // Base URL for the API
+      const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
 
-function toggleDropdown() {
-  var dropdown = document.getElementById("myDropdown");
-  dropdownVisible = !dropdownVisible;
-  if (dropdownVisible) {
-    dropdown.style.display = "block";
-  } else {
-    dropdown.style.display = "none";
-  }
-}
+      // Function to fetch and display room data
+      async function fetchRoomData(room) {
+        try {
+          const currentDate = new Date();
+          const formattedTimestamp = currentDate.toISOString();
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 30 * 60000);
+          const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
-filterSelection("all")
-function filterSelection(c) {
-  var x, i;
-  x = document.getElementsByClassName("filterDiv");
-  if (c == "all") c = "";
-  for (i = 0; i < x.length; i++) {
-    w3RemoveClass(x[i], "show");
-    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
-  }
-}
+          const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
+          const url = `${baseUrl}?room-id=${room.id}&startTime=${formattedFifteenMinutesLater}&endTime=${formattedTimestamp}&fields=temperature,humidity,co2`;
 
-function w3AddClass(element, name) {
-  var i, arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  for (i = 0; i < arr2.length; i++) {
-    if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
-  }
-}
+          const response = await fetch(url, {
+            headers: {
+              'x-api-key': apiKey
+            }
+          });
 
-function w3RemoveClass(element, name) {
-  var i, arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  for (i = 0; i < arr2.length; i++) {
-    while (arr1.indexOf(arr2[i]) > -1) {
-      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const responseData = await response.json();
+
+          if (Array.isArray(responseData.results)) {
+            // Get the first result in the array (assuming there's only one result)
+            const result = responseData.results[0];
+
+            if (Array.isArray(result.series)) {
+              const series = result.series[0];
+
+              if (Array.isArray(series.values)) {
+                const values = series.values;
+
+                localStorage.setItem(`room-${room.id}-data`, JSON.stringify(values));
+
+                displayRoomData(room, values);
+              }
+            }
+          } else {
+            console.error('Data structure is not as expected:', responseData);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+
+      // Function to display room data in Bootstrap boxes
+      function displayRoomData(room, data) {
+        const boxId = `box-${room.id}`;
+        const boxElement = document.getElementById(boxId);
+
+        let tempMaxThreshold = 23;
+        let tempMinThreshold = 20;
+        let humidMaxThreshold = 65;
+        let co2MaxThreshold = 550;
+
+        if (boxElement) {
+          //Visual alerts
+          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
+            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
+            boxElement.innerHTML = `                  
+            <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${room.name}</h5>`
+            //temp too high
+            if (data[0][1] > tempMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
+            }
+            //temp too low
+            else if (data[0][1] < tempMinThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
+            }
+
+            //humid too high
+            if (data[0][2] > humidMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
+            }
+            //co2 too high
+            if (data[0][3] > co2MaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">CO2: ${data[0][3]}</p>`;
+            }
+            boxElement.innerHTML += `
+                            </div>
+                    </div>
+                     `;
+          }
+          //No alerts
+          else {
+            boxElement.innerHTML = `
+                      <div class="card" style="background-color: #66C1DC !important">
+                          <div class="card-body">
+                              <h5 class="card-title">${room.name}</h5>
+                              <p class="card-text">Temperature: ${data[0][1]}</p>
+                              <p class="card-text">Humidity: ${data[0][2]}</p>
+                              <p class="card-text">CO2: ${data[0][3]}</p>
+                          </div>
+                      </div>
+                  `;
+          }
+        }
+      }
+
+
+      //for testing
+      let counter = 0;
+      let reset = 0;
+
+      // Function to fetch data for all rooms
+      async function fetchDataForAllRooms() {
+        localStorage.clear();
+        for (const room of rooms) {
+          const storedData = localStorage.getItem(`room-${room.id}-data`);
+          if (storedData) {
+            const data = JSON.parse(storedData);
+            displayRoomData(room, data);
+          } else {
+            await fetchRoomData(room);
+          }
+        }
+
+        //Log for testing
+        /*
+        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
+        for (let i = 7; i <= 23; i++) {
+
+          if (localStorage.getItem(`room-${i}-data`) === null) {
+            document.getElementById("log").innerHTML += `${i} `;
+          }
+
+        }
+        document.getElementById("log").innerHTML += `</p>`;
+        */
+        //Log for testing over 
+      }
+
+      // This ensures the page is fully loaded before fetching data
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
+      });
+
+      //Fetch data every 10 seconds
+      //CHANGE THIS VALUE LATER
+      setInterval(() => fetchDataForAllRooms(), 10000);
+
+    </script>
+
+    <!--Sample powerBI report-->
+    <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
+      src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+
+    <!--Dismissing alerts-->
+    <script>
+
+      function dismissAlert(boxId) {
+        //Replace blinking icon with static '!'
+        const staticAlert = "<b> ! </b>";
+        const boxElement = document.getElementById(boxId);
+        boxElement.style.backgroundColor = "#66C1DC";
+        boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
+      }
+
+    </script>
+
+    <!--Dashboard layout-->
+    <div id="realTime" class="row justify-content-around container">
+
+      <script>
+        const sensorGroups = {
+      Sensor7: 'GroupA',
+      Sensor8: 'GroupA',
+      Sensor9: 'GroupA',
+      Sensor10: 'GroupA',
+      Sensor11: 'GroupB',
+      Sensor12: 'GroupB',
+      Sensor13: 'GroupB',
+      Sensor14: 'GroupB',
+      Sensor15: 'GroupC',
+      Sensor16: 'GroupC',
+      Sensor17: 'GroupC',
+      Sensor18: 'GroupC',
+      Sensor19: 'GroupD',
+      Sensor20: 'GroupD',
+      Sensor21: 'GroupD',
+      Sensor22: 'GroupD',
+      Sensor23: 'GroupD',
+
+      // Define group assignments for each sensor
+    };
+
+    // Function to update the visibility of sensor boxes based on the selected group
+    function updateSensorVisibility(selectedGroup) {
+      const sensorBoxes = document.querySelectorAll('.box');
+let boxesToShow = [];
+          let row = [];
+
+      sensorBoxes.forEach((box) => {
+        const sensorId = parseInt(box.id.split('-')[1]);
+        const group = sensorGroups[`Sensor${sensorId}`];
+
+        if (selectedGroup === 'AllGroups' || selectedGroup === group) {
+row.push(box);
+              if (row.length >= 4) {
+                boxesToShow.push(row);
+                row = [];
+              }
+            }
+          });
+      
+          if (row.length > 0) {
+            boxesToShow.push(row);
+          }
+      
+          sensorBoxes.forEach((box) => {
+            box.style.display = 'none';
+          });
+      
+          boxesToShow.forEach((row, index) => {
+            row.forEach((box) => {
+          box.style.display = 'block';
+if (index > 0) {
+                box.style.marginLeft = '0px'; // Adjust margin for boxes in rows after the first row
+        } else {
+          box.style.marginLeft = '0';
+        }
+      });
+});
     }
-  }
-  element.className = arr1.join(" ");
-}
-</script>
 
+    // Add an event listener to the group dropdown menu
+    const groupSelect = document.getElementById('group-select');
+    groupSelect.addEventListener('change', function () {
+      const selectedGroup = this.value;
+      updateSensorVisibility(selectedGroup);
+    });
+
+    // Generate the sensor boxes initially
+    for (let id = 7; id <= 23; id++) {
+      const sensorBox = document.createElement('div');
+      sensorBox.className = 'col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center';
+      sensorBox.innerHTML = `
+        <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+      `;
+      document.getElementById('realTime').appendChild(sensorBox);
+    }
+
+    // Set the initial visibility based on the selected group
+    updateSensorVisibility(groupSelect.value);
+      </script>
+    </div>
+  </div>
+
+  <footer>
+    <!--Log for testing
+    <div id="counter"></div>
+    <div id="log">pain</div>
+    -->
+  </footer>
 </body>
+
 </html>
