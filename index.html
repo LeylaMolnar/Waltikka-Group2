@@ -98,8 +98,9 @@
       </div>
     </div>
 
-    <!-- Script for rooms' data starts here-->
+    <audio id="notif" src="notifsound1.mp3" preload="auto"></audio>
 
+    <!-- Script for rooms' data starts here-->
 
     <script>
       // Array of room IDs and corresponding names
@@ -255,19 +256,24 @@
 
             // Checks rooms' conditions and display alerts
             if (mostRecentData[1] > 23) {
+              document.getElementById('notif').play();
               window.alert(`Temperature is too high in ${room.name}: ${mostRecentData[1]}`);
             } else if (mostRecentData[1] < 20) {
+              document.getElementById('notif').play();
               window.alert(`Temperature is too low in ${room.name}: ${mostRecentData[1]}`);
             }
 
             if (mostRecentData[2] > 65) {
+              document.getElementById('notif').play();
               window.alert(`Humidity is too high in ${room.name}: ${mostRecentData[2]}`);
             }
 
             if (mostRecentData[3] > 550) {
+              document.getElementById('notif').play();
               window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
             }
 
+            // Blinking icons for alerts
             if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
