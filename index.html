@@ -16,6 +16,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </head>
 
 <body>
@@ -42,13 +43,11 @@
             <div>
               <label for="group-select" style="font-size: small;">Filter by Group:</label>
               <br>
-              <select name="SensorGroups" id="group-select" style="padding: 15px 35px;">
-                <option value="AllGroups">--All Groups--</option>
-                <option value="GroupA">Group A</option>
-                <option value="GroupB">Group B</option>
-<option value="GroupC">Group C</option>
-                <option value="GroupD">Group D</option>
-                                <!-- Add more group options as needed -->
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
+                <option value="all">Show All</option>
+                <option value="grp-1">Group 1</option>
+                <option value="grp-2">Group 2</option>
+                <option value="grp-3">Group 3</option>                             
               </select>
             </div>
           </div>
@@ -250,19 +249,6 @@
           }
         }
 
-        //Log for testing
-        /*
-        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
-        for (let i = 7; i <= 23; i++) {
-
-          if (localStorage.getItem(`room-${i}-data`) === null) {
-            document.getElementById("log").innerHTML += `${i} `;
-          }
-
-        }
-        document.getElementById("log").innerHTML += `</p>`;
-        */
-        //Log for testing over 
       }
 
       // This ensures the page is fully loaded before fetching data
@@ -296,78 +282,45 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-      <script>
-    const sensorGroups = {
-      Sensor6: 'GroupA',
-      Sensor7: 'GroupA',
-      Sensor8: 'GroupA',
-      Sensor9: 'GroupA',
-      Sensor10: 'GroupB',
-      Sensor11: 'GroupB',
-      Sensor12: 'GroupB',
-      Sensor13: 'GroupB',
-      Sensor14: 'GroupC',
-      Sensor15: 'GroupC',
-      Sensor16: 'GroupC',
-      Sensor17: 'GroupC',
-      Sensor18: 'GroupD',
-      Sensor19: 'GroupD',
-      Sensor20: 'GroupD',
-      Sensor21: 'GroupD',
-      Sensor22: 'GroupD',
-      Sensor23: 'GroupD',
-      // Define group assignments for each sensor
-    };
+      <div class="row" id="realTime">
+        <!-- Sensor boxes will be generated here -->
+    </div>
+</div>
 
-    const groupSensorOrder = {
-      GroupA: ['Sensor6', 'Sensor7', 'Sensor8', 'Sensor9'],
-      GroupB: ['Sensor11', 'Sensor12', 'Sensor13', 'Sensor14'],
-      GroupC: ['Sensor15', 'Sensor16', 'Sensor17', 'Sensor18', 'Sensor23', 'Sensor22', 'Sensor6'],
-      GroupD: ['Sensor19', 'Sensor20', 'Sensor21', 'Sensor22', 'Sensor23'],
-      // Define the order of sensors within each group
-    };
-
-    // Function to update the visibility of sensor boxes based on the selected group
-    function updateSensorVisibility(selectedGroup) {
-      const sensorBoxes = document.querySelectorAll('.box');
-      let shouldShowAll = false;
-
-      if (selectedGroup === 'AllGroups') {
-        shouldShowAll = true;
+<script>
+  function generateSensorBoxes() {
+      for (let id = 7; id <= 23; id++) {
+          let categoryClass = '';
+          if ([7, 8, 9, 10,11,12,13,14,15].includes(id)) {
+              categoryClass = 'grp-1';
+          } else if ([ 17,20,16].includes(id)) {
+              categoryClass = 'grp-2';
+          } else {
+              categoryClass = 'grp-3';
+          }
+          const sensorBox = document.createElement('div');
+          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+          sensorBox.innerHTML = `
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+          `;
+          document.getElementById('realTime').appendChild(sensorBox);
       }
+  }
 
-      sensorBoxes.forEach((box) => {
-        const sensorId = parseInt(box.id.split('-')[1]);
-        const group = sensorGroups[`Sensor${sensorId}`];
-
-        if (shouldShowAll || selectedGroup === group) {
-          box.style.display = 'block';
-        } else {
-          box.style.display = 'none';
-        }
+  function filterSelection(category) {
+      const sensorBoxes = document.querySelectorAll('.sensor-box');
+      sensorBoxes.forEach(box => {
+          if (category === 'all' || box.classList.contains(category)) {
+              box.style.display = 'block';
+          } else {
+              box.style.display = 'none';
+          }
       });
-    }
+  }
 
-    // Add an event listener to the group dropdown menu
-    const groupSelect = document.getElementById('group-select');
-    groupSelect.addEventListener('change', function () {
-      const selectedGroup = this.value;
-      updateSensorVisibility(selectedGroup);
-    });
-
-    // Generate the sensor boxes initially
-    for (let id = 6; id <= 23; id++) {
-      const sensorBox = document.createElement('div');
-      sensorBox.className = 'col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center';
-      sensorBox.innerHTML = `
-        <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
-      `;
-      document.getElementById('realTime').appendChild(sensorBox);
-    }
-
-    // Set the initial visibility based on the selected group
-    updateSensorVisibility(groupSelect.value);
-  </script>
+  // Call the function to generate sensor boxes when the page loads
+  generateSensorBoxes();
+</script>
 
   <footer>
     <!--Log for testing
