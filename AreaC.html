@@ -44,9 +44,9 @@
               <br>
               <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
                 <option value="AllSensors">--All Sensors--</option>
-                <option value="Area-A">Area A: Lobby and Restaurant</option>
-                <option value="Area-B">Area B: Meeting Rooms</option>
-                <option value="Area-C">Area C: Hotel Rooms</option>
+                <option value="AreaA.html">Area A: Lobby and Restaurant</option>
+                <option value="AreaB.html">Area B: Meeting Rooms</option>
+                <option value="AreaC.html">Area C: Hotel Rooms</option>
               </select>
               <script>
                 document.getElementById("sensor-select").addEventListener("change", function() {
@@ -56,9 +56,9 @@
                   // Map option values to their respective URLs
                   var urlMapping = {
                     "AllSensors": "index.html",          // Empty value, no redirection
-                    "Area-A": "AreaA.html",
-                    "Area-B": "AreaB.html",
-                    "Area-C": "AreaC.html"
+                    "AreaA.html": "AreaA.html",
+                    "AreaB.html": "AreaB.html",
+                    "AreaC.html": "AreaC.html"
                   };
               
                   // Get the URL from the mapping
@@ -112,23 +112,14 @@
     <script>
       // Array of room IDs and corresponding names
       const rooms = [
-        { id: 7, name: "Ala-aula" },
         { id: 8, name: "209" },
-        { id: 9, name: "Ravintolasali" },
         { id: 10, name: "109" },
         { id: 11, name: "307" },
-        { id: 12, name: "Alaravintola" },
-        { id: 13, name: "Vuolle 1 neuvottelutila" },
-        { id: 14, name: "Ala-aulan narikka" },
-        { id: 15, name: "2. kerroksen aulatila" },
-        { id: 16, name: "Yläravintola lavan oikea puoli" },
-        { id: 17, name: "Linno 1 ja 2 neuvottelutila" },
         { id: 18, name: "129" },
         { id: 19, name: "126" },
         { id: 20, name: "229" },
         { id: 21, name: "226" },
         { id: 22, name: "326" },
-        { id: 23, name: "Linno 1 ja 2 neuvottelutila" },
       ];
 
       // Base URL for the API
