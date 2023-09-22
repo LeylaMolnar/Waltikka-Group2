@@ -40,36 +40,14 @@
         <div class="col">
           <div class="top-droplist">
             <div>
-              <label for="sensor-select" style="font-size: small;">Filter:</label>
+              <label for="group-select" style="font-size: small;">Filter by Group:</label>
               <br>
-              <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+              <select name="SensorGroups" id="group-select" style="padding: 15px 35px;">
                 <option value="AllSensors">--All Sensors--</option>
-                <option value="Area-A">Area A: Lobby and Restaurant</option>
-                <option value="Area-B">Area B: Meeting Rooms</option>
-                <option value="Area-C">Area C: Hotel Rooms</option>
+                <option value="AreaA">Area A</option>
+                <option value="AreaB">Area B</option>
+                <option value="AreaC">Area C</option>
               </select>
-              <script>
-                document.getElementById("sensor-select").addEventListener("change", function() {
-                  var selectedOption = this.options[this.selectedIndex];
-                  var optionValue = selectedOption.value;
-              
-                  // Map option values to their respective URLs
-                  var urlMapping = {
-                    "AllSensors": "index.html",          // Empty value, no redirection
-                    "Area-A": "AreaA.html",
-                    "Area-B": "AreaB.html",
-                    "Area-C": "AreaC.html"
-                  };
-              
-                  // Get the URL from the mapping
-                  var url = urlMapping[optionValue];
-              
-                  if (url) {
-                    window.location.href = url; // Redirect to the selected URL
-                  }
-                });
-              </script>
-              
             </div>
           </div>
         </div>
@@ -233,7 +211,8 @@
             }
             boxElement.innerHTML += `
                             </div>
-                    </div>`;
+                    </div>
+                     `;
           }
           //No alerts
           else {
@@ -268,6 +247,20 @@
             await fetchRoomData(room);
           }
         }
+
+        //Log for testing
+        /*
+        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
+        for (let i = 7; i <= 23; i++) {
+
+          if (localStorage.getItem(`room-${i}-data`) === null) {
+            document.getElementById("log").innerHTML += `${i} `;
+          }
+
+        }
+        document.getElementById("log").innerHTML += `</p>`;
+        */
+        //Log for testing over 
       }
 
       // This ensures the page is fully loaded before fetching data
@@ -302,17 +295,75 @@
     <div id="realTime" class="row justify-content-around container">
 
       <script>
-        for (let id = 7; id <= 23; id++) {
-          document.getElementById("realTime").innerHTML += `
-            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
-            </div>
-            `;
+    const sensorGroups = {
+      Sensor7: 'AreaA',
+      Sensor8: 'AreaC',
+      Sensor9: 'AreaA',
+      Sensor10: 'AreaC',
+      Sensor11: 'AreaC',
+      Sensor12: 'AreaA',
+      Sensor13: 'AreaB',
+      Sensor14: 'AreaA',
+      Sensor15: 'AreaA',
+      Sensor16: 'AreaA',
+      Sensor17: 'AreaB',
+      Sensor18: 'AreaC',
+      Sensor19: 'AreaC',
+      Sensor20: 'AreaC',
+      Sensor21: 'AreaC',
+      Sensor22: 'AreaC',
+      Sensor23: 'AreaB',
+      // Define group assignments for each sensor
+    };
 
+    const groupSensorOrder = {
+      AreaA: ['Sensor7', 'Sensor9', 'Sensor12', 'Sensor14', 'Sensor15', 'Sensor16'],
+      AreaB: ['Sensor13', 'Sensor17', 'Sensor23'],
+      AreaC: ['Sensor8', 'Sensor10', 'Sensor11', 'Sensor18', 'Sensor19', 'Sensor20', 'Sensor21', 'Sensor22'],
+      // Define the order of sensors within each group
+    };
+
+    // Function to update the visibility of sensor boxes based on the selected group
+    function updateSensorVisibility(selectedGroup) {
+      const sensorBoxes = document.querySelectorAll('.box');
+      let shouldShowAll = false;
+
+      if (selectedGroup === 'AllSensors') {
+        shouldShowAll = true;
+      }
+
+      sensorBoxes.forEach((box) => {
+        const sensorId = parseInt(box.id.split('-')[1]);
+        const group = sensorGroups[`Sensor${sensorId}`];
+
+        if (shouldShowAll || selectedGroup === group) {
+          box.style.display = 'block';
+        } else {
+          box.style.display = 'none';
         }
-      </script>
-    </div>
-  </div>
+      });
+    }
+
+    // Add an event listener to the group dropdown menu
+    const groupSelect = document.getElementById('group-select');
+    groupSelect.addEventListener('change', function () {
+      const selectedGroup = this.value;
+      updateSensorVisibility(selectedGroup);
+    });
+
+    // Generate the sensor boxes initially
+    for (let id = 7; id <= 23; id++) {
+      const sensorBox = document.createElement('div');
+      sensorBox.className = 'sensor-box';
+      sensorBox.innerHTML = `
+        <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+      `;
+      document.getElementById('realTime').appendChild(sensorBox);
+    }
+
+    // Set the initial visibility based on the selected group
+    updateSensorVisibility(groupSelect.value);
+  </script>
 
   <footer>
     <!--Log for testing

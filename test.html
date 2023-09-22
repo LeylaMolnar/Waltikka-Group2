@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Include any necessary CSS and other scripts -->
+  <style>
+    .filterDiv {
+      display: none;
+    }
+    .show {
+      display: inline-block;
+      width: 24%; /* Adjust the width to 24% to display 4 sensors in one line */
+      margin: 1%; /* Add margin for spacing */
+      box-sizing: border-box; /* Include padding and border in the width */
+    }
+  </style>
+</head>
+<body>
+
+<div id="myBtnContainer">
+  <button class="btn active" data-category="all">Show All</button>
+  <button class="btn" data-category="grp-1">Group 1</button>
+  <button class="btn" data-category="grp-2">Group 2</button>
+  <button class="btn" data-category="grp-3">Group 3</button>
+  <!-- Add more category buttons as needed -->
+</div>
+
+<div id="realTime">
+  <!-- Sensor boxes will be dynamically generated here -->
+</div>
+
+<script>
+function generateSensorBoxes() {
+  for (let id = 7; id <= 23; id++) {
+    let categoryClass = '';
+    if ([7, 8, 10, 12].includes(id)) {
+      categoryClass = 'grp-1';
+    } else if ([9, 13, 14, 15, 17].includes(id)) {
+      categoryClass = 'grp-2';
+    } else {
+      categoryClass = 'grp-3';
+    }
+    const sensorBox = document.createElement('div');
+    sensorBox.className = `filterDiv ${categoryClass} show col-md-6 d-flex justify-content-center`;
+    sensorBox.innerHTML = `
+      <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+    `;
+    document.getElementById('realTime').appendChild(sensorBox);
+  }
+}
+
+function filterSelection(category) {
+  const elements = document.getElementsByClassName('filterDiv');
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    if (category === 'all' || element.classList.contains(category)) {
+      element.classList.add('show');
+    } else {
+      element.classList.remove('show');
+    }
+  }
+}
+
+// Add active class and filter on button click
+var btns = document.getElementsByClassName("btn");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function(){
+    var current = document.querySelector(".btn.active");
+    current.classList.remove("active");
+    this.classList.add("active");
+    filterSelection(this.getAttribute('data-category'));
+  });
+}
+
+// Call the function to generate sensor boxes when the page loads
+generateSensorBoxes();
+</script>
+
+</body>
+</html>

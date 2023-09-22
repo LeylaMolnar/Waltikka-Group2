@@ -125,3 +125,12 @@ to {
   visibility: hidden;
 }
 }
+
+  .sensor-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust the column width as needed */
+    gap: 20px; /* Add gap for spacing between boxes */
+  }
+
+
+
