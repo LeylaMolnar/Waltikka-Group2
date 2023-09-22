@@ -16,6 +16,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </head>
 
 <body>
@@ -40,36 +41,14 @@
         <div class="col">
           <div class="top-droplist">
             <div>
-              <label for="sensor-select" style="font-size: small;">Filter:</label>
+              <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
-                <option value="Area-A">Area A: Lobby and Restaurant</option>
-                <option value="Area-B">Area B: Meeting Rooms</option>
-                <option value="Area-C">Area C: Hotel Rooms</option>
+                <option value="AreaA">Area A: Lobby and Restaurant</option>
+                <option value="AreaB">Area B: Meeting Rooms</option>
+                <option value="AreaC">Area C: Hotel Rooms</option>                             
               </select>
-              <script>
-                document.getElementById("sensor-select").addEventListener("change", function() {
-                  var selectedOption = this.options[this.selectedIndex];
-                  var optionValue = selectedOption.value;
-              
-                  // Map option values to their respective URLs
-                  var urlMapping = {
-                    "AllSensors": "index.html",          // Empty value, no redirection
-                    "Area-A": "AreaA.html",
-                    "Area-B": "AreaB.html",
-                    "Area-C": "AreaC.html"
-                  };
-              
-                  // Get the URL from the mapping
-                  var url = urlMapping[optionValue];
-              
-                  if (url) {
-                    window.location.href = url; // Redirect to the selected URL
-                  }
-                });
-              </script>
-              
             </div>
           </div>
         </div>
@@ -233,7 +212,8 @@
             }
             boxElement.innerHTML += `
                             </div>
-                    </div>`;
+                    </div>
+                     `;
           }
           //No alerts
           else {
@@ -268,6 +248,7 @@
             await fetchRoomData(room);
           }
         }
+
       }
 
       // This ensures the page is fully loaded before fetching data
@@ -301,18 +282,45 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-      <script>
-        for (let id = 7; id <= 23; id++) {
-          document.getElementById("realTime").innerHTML += `
-            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
-            </div>
-            `;
-
-        }
-      </script>
+      <div class="row" id="realTime">
+        <!-- Sensor boxes will be generated here -->
     </div>
-  </div>
+</div>
+
+<script>
+  function generateSensorBoxes() {
+      for (let id = 7; id <= 23; id++) {
+          let categoryClass = '';
+          if ([7, 9, 12, 14, 15, 16].includes(id)) {
+              categoryClass = 'AreaA';
+          } else if ([13, 17, 23].includes(id)) {
+              categoryClass = 'AreaB';
+          } else {
+              categoryClass = 'AreaC';
+          }
+          const sensorBox = document.createElement('div');
+          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+          sensorBox.innerHTML = `
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+          `;
+          document.getElementById('realTime').appendChild(sensorBox);
+      }
+  }
+
+  function filterSelection(category) {
+      const sensorBoxes = document.querySelectorAll('.sensor-box');
+      sensorBoxes.forEach(box => {
+          if (category === 'AllSensors' || box.classList.contains(category)) {
+              box.style.display = 'block';
+          } else {
+              box.style.display = 'none';
+          }
+      });
+  }
+
+  // Call the function to generate sensor boxes when the page loads
+  generateSensorBoxes();
+</script>
 
   <footer>
     <!--Log for testing
