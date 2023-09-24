@@ -98,11 +98,18 @@
       </div>
     </div>
 
-    <audio id="notif" src="notifsound1.mp3" preload="auto"></audio>
+    <input type="button" value="Test notification sound" onclick="play()">
+    <audio id="notif" src="notifsound4.mp3"></audio>
 
     <!-- Script for rooms' data starts here-->
 
     <script>
+      //Button for testing the notification sound 
+        function play() {
+        var audio = document.getElementById("notif");
+        audio.play();
+      }
+
       // Array of room IDs and corresponding names
       const rooms = [
         { id: 7, name: "Ala-aula" },
@@ -249,7 +256,6 @@
             const humidity = (sumHumidity / countHumidity).toFixed(0);
             const co2 = (sumCo2 / countCo2).toFixed(0);
 
-
             let temperatureText = `Temperature: ${temperature}`;
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
@@ -361,7 +367,7 @@
 
       //Fetch data every 10 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 10000);
+      setInterval(() => fetchDataForAllRooms(), 60000);
 
     </script>
 
