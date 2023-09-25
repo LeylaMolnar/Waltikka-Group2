@@ -41,13 +41,13 @@
         <div class="col">
           <div class="top-droplist">
             <div>
-              <label for="group-select" style="font-size: small;">Filter by Group:</label>
+              <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
               <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
-                <option value="all">Show All</option>
-                <option value="grp-1">Group 1</option>
-                <option value="grp-2">Group 2</option>
-                <option value="grp-3">Group 3</option>                             
+                <option value="AllSensors">--All Sensors--</option>
+                <option value="AreaA">Area A: Lobby and Restaurant</option>
+                <option value="AreaB">Area B: Meeting Rooms</option>
+                <option value="AreaC">Area C: Hotel Rooms</option>                             
               </select>
             </div>
           </div>
@@ -291,12 +291,12 @@
   function generateSensorBoxes() {
       for (let id = 7; id <= 23; id++) {
           let categoryClass = '';
-          if ([7, 8, 9, 10,11,12,13,14,15].includes(id)) {
-              categoryClass = 'grp-1';
-          } else if ([ 17,20,16].includes(id)) {
-              categoryClass = 'grp-2';
+          if ([7, 9, 12, 14, 15, 16].includes(id)) {
+              categoryClass = 'AreaA';
+          } else if ([13, 17, 23].includes(id)) {
+              categoryClass = 'AreaB';
           } else {
-              categoryClass = 'grp-3';
+              categoryClass = 'AreaC';
           }
           const sensorBox = document.createElement('div');
           sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
@@ -310,7 +310,7 @@
   function filterSelection(category) {
       const sensorBoxes = document.querySelectorAll('.sensor-box');
       sensorBoxes.forEach(box => {
-          if (category === 'all' || box.classList.contains(category)) {
+          if (category === 'AllSensors' || box.classList.contains(category)) {
               box.style.display = 'block';
           } else {
               box.style.display = 'none';
