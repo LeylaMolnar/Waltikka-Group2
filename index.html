@@ -15,6 +15,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" id="graph"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
 
@@ -67,29 +68,32 @@
         </div>
         <div class="col">
           <div class="switchDiv">
-            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()" style="margin-top: 15px;" type="text" name="datefilter">View Historical Data</button>
+            <button id="btn" class="btn btn-light switch" onclick="toggleHistorical()"
+              style="margin-top: 15px;" type="text" name="datefilter">View Historical Data</button>
             <script>
-            function toggleHistorical() {
-              var btn = document.getElementById("btn");
-              if (btn.innerHTML === "View Historical Data") {
-                btn.innerHTML = "View Real-time Dashboard";
-              } else {
-                btn.innerHTML = "View Historical Data";
+              function toggleHistorical() {
+                var btn = document.getElementById("btn");
+                if (btn.innerHTML === "View Historical Data") {
+                  btn.innerHTML = "View Real-time Dashboard";
+                  displayHistoricalGraph();
+                } else {
+                  btn.innerHTML = "View Historical Data";
+                }
+
+                var x = document.getElementById("graph");
+                if (x.style.display === "none") {
+                  x.style.display = "block";
+                } else {
+                  x.style.display = "none";
+                }
+                var y = document.getElementById("realTime");
+                if (y.style.display === "none") {
+                  y.style.display = "flex";
+                } else {
+                  y.style.display = "none";
+                }
               }
-              
-              var x = document.getElementById("powerBI");
-              if (x.style.display === "none") {
-                x.style.display = "block";
-              } else {
-                x.style.display = "none";
-              }
-              var y = document.getElementById("realTime");
-              if (y.style.display === "none") {
-                y.style.display = "flex";
-              } else {
-                y.style.display = "none";
-              }
-            }
+
             </script>
           </div>
 
@@ -99,9 +103,7 @@
 
     <!-- Script for rooms' data starts here-->
 
-
     <script>
-      
       // Array of room IDs and corresponding names
       const rooms = [
         { id: 7, name: "Ala-aula" },
@@ -126,278 +128,107 @@
       // Base URL for the API
       const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
 
-      // Function to fetch and display room data
       async function fetchRoomData(room) {
-        try {
-          const currentDate = new Date();
-          const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 7 * 24 *  60 * 60000);
-          const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
-          240
-          const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
-          const url = `${baseUrl}?room-id=${room.id}&startTime=${formattedFifteenMinutesLater}&endTime=${formattedTimestamp}&fields=temperature,humidity,co2`;
-
-          const response = await fetch(url, {
-            headers: {
-              'x-api-key': apiKey
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const responseData = await response.json();
-
-          if (Array.isArray(responseData.results)) {
-            // Get the first result in the array (assuming there's only one result)
-            const result = responseData.results[0];
-
-            if (Array.isArray(result.series)) {
-              const series = result.series[0];
-
-              if (Array.isArray(series.values)) {
-                const values = series.values;
-
-                localStorage.setItem(`room-${room.id}-data`, JSON.stringify(values));
-
-                displayRoomData(room, values);
-              }
-            }
-          } else {
-            console.error('Data structure is not as expected:', responseData);
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
+        // ... (your fetchRoomData function) ...
       }
 
-      // Function to display room data in Bootstrap boxes
       function displayRoomData(room, data) {
-    const boxId = `box-${room.id}`;
-    const boxElement = document.getElementById(boxId);
-
-    if (boxElement) {
-        if (data && data.length > 0) {
-            const mostRecentData = data[data.length - 1]; // Get the last data entry
-            
-            // Format the ISO time to display time before date in Finnish time format
-            const isoTime = mostRecentData[0];
-            const dateObj = new Date(isoTime);
-            const formattedTime = dateObj.toLocaleString('fi-FI', {
-                hour: '2-digit',
-                minute: '2-digit',
-            });
-            const formattedDate = dateObj.toLocaleString('fi-FI', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-            });
-                      // Initialize variables for sum and count of temperature values
-            let sumTemperature = 0;
-            let countTemperature = 0;
-
-            // Iterate through data to extract and sum up temperature values
-            data.forEach((dataEntry) => {
-                // Extract the temperature value from mostRecentData[1]
-                const temperature = dataEntry[1];
-
-                // Add the temperature value to the sum
-                sumTemperature += temperature;
-
-                // Increment the count of temperature values
-                countTemperature++;
-            });
-            
-            let sumHumidity = 0;
-            let countHumidity = 0;
-
-            // Iterate through data to extract and sum up temperature values
-            data.forEach((dataEntry) => {
-                // Extract the temperature value from mostRecentData[1]
-                const humidity = dataEntry[2];
-
-                // Add the temperature value to the sum
-                sumHumidity += humidity;
-
-                // Increment the count of temperature values
-                countHumidity++;
-            });
-
-            let sumCo2 = 0;
-            let countCo2 = 0;
-
-            // Iterate through data to extract and sum up temperature values
-            data.forEach((dataEntry) => {
-                // Extract the temperature value from mostRecentData[1]
-                const co2 = dataEntry[3];
-
-                // Add the temperature value to the sum
-                sumCo2 += co2;
-
-                // Increment the count of temperature values
-                countCo2++;
-            });
-            // Calculate the mean temperature
-            const temperature = (sumTemperature / countTemperature).toFixed(1);
-            const humidity = (sumHumidity / countHumidity).toFixed(0);
-            const co2 = (sumCo2 / countCo2).toFixed(0);
-
-
-            let temperatureText = `Temperature: ${temperature}`;
-            let humidityText = `Humidity: ${humidity}`;
-            let co2Text = `CO2: ${mostRecentData[3]}`;
-
-            if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
-                boxElement.style.backgroundColor = "#F66D6E";
-                //temp too high
-                if (temperature > 23) {
-                    temperatureText = `<span class="blink">🔥</span>Temperature: ${temperature}<span class="blink">🔥</span>`;
-                }
-                //temp too low
-                else if (temperature < 20){
-                    temperatureText = `<span class="blink">❄</span>Temperature: ${temperature}<span class="blink">❄</span>`;
-                }
-
-                //humid too high
-                if (humidity > 65) {
-                    humidityText = `<span class="blink">💧</span>Humidity: ${humidity}<span class="blink">💧</span>`;
-                }
-
-                //co2 too high
-                if (co2 > 550) {
-                    co2Text = `<span class="blink">💀</span>CO2: ${co2}<span class="blink">💀</span>`;
-                }
-            }
-
-            boxElement.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">${room.name}</h5>
-                        <p class="card-text">${temperatureText}</p>
-                        <p class="card-text">${humidityText}</p>
-                        <p class="card-text">${co2Text}</p>
-                        <p class="card-text">${formattedTime}  ${formattedDate}</p>
-                    </div>
-                </div>
-            `;
-        } else {
-            // Display a placeholder message or default values when data is not available
-            boxElement.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">${room.name}</h5>
-                        <p class="card-text">Data not available</p>
-                    </div>
-                </div>
-            `;
-        }
-    }
-}
-
-
-
-      // Function to fetch data for all rooms
-      async function fetchDataForAllRooms() {
-        for (const room of rooms) {
-          const storedData = localStorage.getItem(`room-${room.id}-data`);
-          if (storedData) {
-            const data = JSON.parse(storedData);
-            displayRoomData(room, data);
-          } else {
-            await fetchRoomData(room);
-          }
-        }
+        // ... (your displayRoomData function) ...
       }
 
-      // This ensures the page is fully loaded before fetching data
+      async function fetchDataForAllRooms() {
+        // ... (your fetchDataForAllRooms function) ...
+      }
+
       document.addEventListener('DOMContentLoaded', () => {
-        fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
+        fetchDataForAllRooms();
+      });
+
+      setInterval(() => fetchDataForAllRooms(), 24 * 60 * 60000);
+
+      function displayHistoricalGraph() {
+        // ... (your historical graph code) ...
+      }
+    </script>
+
+    <!--Sample powerBI report-->
+    <!-- Include Chart.js -->
+
+
+    <!-- Create a canvas element for the chart -->
+    <canvas id="myChart"></canvas>
+
+    <!-- JavaScript to initialize the chart -->
+    <script>
+      const xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+
+      new Chart("myChart", {
+        type: "line",
+        data: {
+          labels: xValues,
+          datasets: [
+            {
+              data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
+              borderColor: "red",
+              fill: false,
+            },
+            {
+              data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
+              borderColor: "green",
+              fill: false,
+            },
+            {
+              data: [300, 700, 2000, 5000, 6000, 4000, 2000, 1000, 200, 100],
+              borderColor: "blue",
+              fill: false,
+            },
+          ],
+        },
+        options: {
+          legend: { display: false },
+        },
       });
     </script>
 
+    <!--Dismissing alerts-->
+    <script>
 
+      function dismissAlert(boxId) {
+        //Replace blinking icon with static '!'
+        const staticAlert = "<b> ! </b>";
+        const boxElement = document.getElementById(boxId);
+        boxElement.style.backgroundColor = "#66C1DC";
+        boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
+      }
 
-<!--Sample powerBI report-->
-<iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25" src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+    </script>
 
-    <!-- Script for rooms' data ends here-->
-
+    <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-7">Sensor 1</div>
-      </div>
+      <script>
+        for (let id = 7; id <= 23; id++) {
+          document.getElementById("realTime").innerHTML += `
+            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+            </div>
+            `;
 
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-8">Sensor 2</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-9">Sensor 3</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-10">Sensor 4</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-11">Sensor 5</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-12">Sensor 6</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-13">Sensor 7</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-14">Sensor 8</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-15">Sensor 9</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-16">Sensor 10</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-17">Sensor 11</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-18">Sensor 12</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-19">Sensor 13</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-20">Sensor 14</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-21">Sensor 15</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-22">Sensor 16</div>
-      </div>
-
-      <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-        <div class="box" id="box-23">Sensor 17</div>
-      </div>
-
+        }
+      </script>
     </div>
   </div>
 
+  <div id="historicalDataGraph" class="container">
+    <h2>Historical Data Graph</h2>
+    <canvas id="historicalChart"></canvas>
+  </div>
+
   <footer>
-    <p> </p>
+    <!--Log for testing
+    <div id="counter"></div>
+    <div id="log">pain</div>
+    -->
   </footer>
 </body>
 
