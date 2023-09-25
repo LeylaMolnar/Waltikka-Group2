@@ -87,18 +87,70 @@ box-shadow: 3px 3px #F3F2F1;
   margin-left: 15px;
 }
 
-@media screen and (max-width: 500px) {
-.switch {
-    width: auto;
-}
-.switchDiv{
-  text-align: center;
-}
-.top-droplist{
-  text-align: center;
-  margin-left: 0px;
-}
-}
+@media screen and (max-width: 500px) and (min-width: 400px){
+  .switch {
+      width: auto;
+  }
+  .switchDiv{
+    text-align: center;
+  }
+  .top-droplist{
+    text-align: center;
+    margin-left: 0px;
+  
+  }
+  div.box{
+    margin-left: 40px;
+  }
+  }
+  @media screen and (max-width: 400px) {
+    .switch {
+        width: auto;
+    }
+    .switchDiv{
+      text-align: center;
+    }
+    .top-droplist{
+      text-align: center;
+      margin-left: -22px;
+    
+    }
+    div.box{
+      margin-left: 25px;
+    }
+    button#btn{
+      margin-left: 12px;
+    }
+    }
+  
+    @media screen and (max-width: 1399px) and (min-width: 1200px) {
+      div.col-xl-3:nth-child(n){
+        margin-right: 50px;
+      }
+      
+    }
+    @media screen and (max-width: 1199px) and (min-width: 990px) {
+   div.switchDiv{
+      margin-left: 40px;
+   }
+
+    }
+    @media screen and (max-width: 767px) and (min-width: 520px){
+      div.box:nth-child(n){
+        margin-left: auto;
+        margin-right:  auto;
+      }
+      .top-droplist{
+        text-align: center;
+        margin-left: 5px;
+      
+      }
+      div.switchDiv{
+        text-align: center;
+        margin-left: 2px;
+     }
+    }
+
 
 .card{
 background: rgba(0,0,0,0) !important;
