@@ -124,7 +124,7 @@
       ];
 
       //Array for rooms that currently have an alert
-      let roomsAlert = [];
+      let roomsAlert = [0];
 
       // Base URL for the API
       const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
@@ -256,19 +256,11 @@
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
-            
+
             if (temperature > tempMaxThreshold || temperature < tempMinThreshold || humidity > humidMaxThreshold || co2 > co2MaxThreshold) {
-                        
+
               //Add room to roomsAlert list
-              var roomAlert = {
-                id: room.id, name: room.name
-              }
-              roomsAlert.push(roomAlert);
-              for (let i = 0; i < roomsAlert; i++) {
-                const element = array[i];
-                
-              }   
-              document.getElementById("log").innerHTML += roomAlert.id + " " + roomAlert.name;
+              roomsAlert.push(room.name);
 
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
@@ -334,7 +326,7 @@
             await fetchRoomData(room);
           }
         }
-
+        //displayDataForAllRooms();
         //Log for testing
         /*
         document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
@@ -381,24 +373,48 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
+
       <script>
-        for (let id = 7; id <= 23; id++) {
-          document.getElementById("realTime").innerHTML += `
+        //function displayDataForAllRooms() {
+          //test
+          //roomsAlert.push(17);
+          //--
+          
+          document.getElementById("realTime").innerHTML = ``;
+
+          //Rooms with alerts
+          for (let i = 0; i < rooms.length; i++) {
+            if (roomsAlert.includes(rooms[i].id)) {
+              document.getElementById("realTime").innerHTML += `
             <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+              <div class="box" id="box-${rooms[i].id}" onclick="dismissAlert(this.id)">Sensor ${rooms[i].id}</div>
             </div>
             `;
+            }
+          }
+          //Rooms without alerts
+          for (let i = 0; i < rooms.length; i++) {
+            if (!roomsAlert.includes(rooms[i].id)) {
+              document.getElementById("realTime").innerHTML += `
+            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
+              <div class="box" id="box-${rooms[i].id}" onclick="dismissAlert(this.id)">Sensor ${rooms[i].id}</div>
+            </div>
+            `;
+            }
+          }
 
-        }
+
+
+        //}
       </script>
     </div>
   </div>
 
   <footer>
-    
+
     <div id="counter"></div>
     <div id="log">pain</div>
-    
+
   </footer>
 </body>
 
