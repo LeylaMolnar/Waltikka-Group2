@@ -103,7 +103,7 @@
 
     <script>
       // Array of room IDs and corresponding names
-      const rooms = [
+      let rooms = [
         { id: 7, name: "Ala-aula" },
         { id: 8, name: "209" },
         { id: 9, name: "Ravintolasali" },
@@ -122,6 +122,9 @@
         { id: 22, name: "326" },
         { id: 23, name: "Linno 1 ja 2 neuvottelutila" },
       ];
+
+      //Array for rooms that currently have an alert
+      let roomsAlert = [];
 
       // Base URL for the API
       const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
@@ -253,7 +256,20 @@
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
-            if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
+            
+            if (temperature > tempMaxThreshold || temperature < tempMinThreshold || humidity > humidMaxThreshold || co2 > co2MaxThreshold) {
+                        
+              //Add room to roomsAlert list
+              var roomAlert = {
+                id: room.id, name: room.name
+              }
+              roomsAlert.push(roomAlert);
+              for (let i = 0; i < roomsAlert; i++) {
+                const element = array[i];
+                
+              }   
+              document.getElementById("log").innerHTML += roomAlert.id + " " + roomAlert.name;
+
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
               if (temperature > tempMaxThreshold) {
@@ -282,6 +298,7 @@
                         <p class="card-text">${temperatureText}</p>
                         <p class="card-text">${humidityText}</p>
                         <p class="card-text">${co2Text}</p>
+
                     </div>
                 </div>
             `;
@@ -378,10 +395,10 @@
   </div>
 
   <footer>
-    <!--Log for testing
+    
     <div id="counter"></div>
     <div id="log">pain</div>
-    -->
+    
   </footer>
 </body>
 
