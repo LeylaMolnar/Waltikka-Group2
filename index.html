@@ -98,10 +98,13 @@
       </div>
     </div>
 
+
+    <audio id="notif" src="notifsound2.mp3"></audio>
+
     <!-- Script for rooms' data starts here-->
 
-
     <script>
+
       // Array of room IDs and corresponding names
       const rooms = [
         { id: 7, name: "Ala-aula" },
@@ -248,11 +251,30 @@
             const humidity = (sumHumidity / countHumidity).toFixed(0);
             const co2 = (sumCo2 / countCo2).toFixed(0);
 
-
             let temperatureText = `Temperature: ${temperature}`;
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
+            // Checks rooms' conditions and display alerts
+            if (mostRecentData[1] > 23) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too high in ${room.name}: ${mostRecentData[1]}`);
+            } else if (mostRecentData[1] < 20) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too low in ${room.name}: ${mostRecentData[1]}`);
+            }
+
+            if (mostRecentData[2] > 65) {
+              document.getElementById('notif').play();
+              window.alert(`Humidity is too high in ${room.name}: ${mostRecentData[2]}`);
+            }
+
+            if (mostRecentData[3] > 550) {
+              document.getElementById('notif').play();
+              window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
+            }
+
+            // Blinking icons for alerts
             if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
