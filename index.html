@@ -16,6 +16,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </head>
 
 <body>
@@ -40,27 +41,13 @@
         <div class="col">
           <div class="top-droplist">
             <div>
-              <label for="sensor-select" style="font-size: small;">Filter:</label>
+              <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
-                <option value="Sensor1">Sensor 1</option>
-                <option value="Sensor2">Sensor 2</option>
-                <option value="Sensor3">Sensor 3</option>
-                <option value="Sensor4">Sensor 4</option>
-                <option value="Sensor5">Sensor 5</option>
-                <option value="Sensor6">Sensor 6</option>
-                <option value="Sensor7">Sensor 7</option>
-                <option value="Sensor8">Sensor 8</option>
-                <option value="Sensor9">Sensor 9</option>
-                <option value="Sensor10">Sensor 10</option>
-                <option value="Sensor11">Sensor 11</option>
-                <option value="Sensor12">Sensor 12</option>
-                <option value="Sensor13">Sensor 13</option>
-                <option value="Sensor14">Sensor 14</option>
-                <option value="Sensor15">Sensor 15</option>
-                <option value="Sensor16">Sensor 16</option>
-                <option value="Sensor17">Sensor 17</option>
+                <option value="AreaA">Area A: Lobby and Restaurant</option>
+                <option value="AreaB">Area B: Meeting Rooms</option>
+                <option value="AreaC">Area C: Hotel Rooms</option>                             
               </select>
             </div>
           </div>
@@ -98,13 +85,12 @@
       </div>
     </div>
 
-
     <audio id="notif" src="notifsound2.mp3"></audio>
 
     <!-- Script for rooms' data starts here-->
 
-    <script>
 
+    <script>
       // Array of room IDs and corresponding names
       const rooms = [
         { id: 7, name: "Ala-aula" },
@@ -176,6 +162,78 @@
       }
 
       // Function to display room data in Bootstrap boxes
+      function displayRoomData(room, data) {
+        const boxId = `box-${room.id}`;
+        const boxElement = document.getElementById(boxId);
+
+        let tempMaxThreshold = 23;
+        let tempMinThreshold = 20;
+        let humidMaxThreshold = 65;
+        let co2MaxThreshold = 550;
+
+        if (boxElement) {
+          //Visual alerts
+          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
+            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
+            boxElement.innerHTML = `                  
+            <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${room.name}</h5>`
+            //temp too high
+            if (data[0][1] > tempMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
+            }
+            //temp too low
+            else if (data[0][1] < tempMinThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
+            }
+
+            //humid too high
+            if (data[0][2] > humidMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
+            }
+            //co2 too high
+            if (data[0][3] > co2MaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">CO2: ${data[0][3]}</p>`;
+            }
+            boxElement.innerHTML += `
+                            </div>
+                    </div>`;
+          }
+          //No alerts
+          else {
+            boxElement.innerHTML = `
+                      <div class="card" style="background-color: #66C1DC !important">
+                          <div class="card-body">
+                              <h5 class="card-title">${room.name}</h5>
+                              <p class="card-text">Temperature: ${data[0][1]}</p>
+                              <p class="card-text">Humidity: ${data[0][2]}</p>
+                              <p class="card-text">CO2: ${data[0][3]}</p>
+                          </div>
+                      </div>
+                  `;
+          }
+        }
+      }
+
+
+      // Function to display room data in Bootstrap boxes + Notifications
       function displayRoomData(room, data) {
         const boxId = `box-${room.id}`;
         const boxElement = document.getElementById(boxId);
@@ -321,11 +379,10 @@
         }
       }
 
-      //For testing
-      /*
+
+      //for testing
       let counter = 0;
       let reset = 0;
-      */
 
       // Function to fetch data for all rooms
       async function fetchDataForAllRooms() {
@@ -339,20 +396,6 @@
             await fetchRoomData(room);
           }
         }
-
-        //Log for testing
-        /*
-        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
-        for (let i = 7; i <= 23; i++) {
-
-          if (localStorage.getItem(`room-${i}-data`) === null) {
-            document.getElementById("log").innerHTML += `${i} `;
-          }
-
-        }
-        document.getElementById("log").innerHTML += `</p>`;
-        */
-        //Log for testing over 
       }
 
       // This ensures the page is fully loaded before fetching data
@@ -386,18 +429,45 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-      <script>
-        for (let id = 7; id <= 23; id++) {
-          document.getElementById("realTime").innerHTML += `
-            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
-            </div>
-            `;
-
-        }
-      </script>
+      <div class="row" id="realTime">
+        <!-- Sensor boxes will be generated here -->
     </div>
-  </div>
+</div>
+
+<script>
+  function generateSensorBoxes() {
+      for (let id = 7; id <= 23; id++) {
+          let categoryClass = '';
+          if ([7, 9, 12, 14, 15, 16].includes(id)) {
+              categoryClass = 'AreaA';
+          } else if ([13, 17, 23].includes(id)) {
+              categoryClass = 'AreaB';
+          } else {
+              categoryClass = 'AreaC';
+          }
+          const sensorBox = document.createElement('div');
+          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+          sensorBox.innerHTML = `
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+          `;
+          document.getElementById('realTime').appendChild(sensorBox);
+      }
+  }
+
+  function filterSelection(category) {
+      const sensorBoxes = document.querySelectorAll('.sensor-box');
+      sensorBoxes.forEach(box => {
+          if (category === 'AllSensors' || box.classList.contains(category)) {
+              box.style.display = 'block';
+          } else {
+              box.style.display = 'none';
+          }
+      });
+  }
+
+  // Call the function to generate sensor boxes when the page loads
+  generateSensorBoxes();
+</script>
 
   <footer>
     <!--Log for testing
