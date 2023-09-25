@@ -43,11 +43,12 @@
             <div>
               <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select"
+                onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
                 <option value="AreaA">Area A: Lobby and Restaurant</option>
                 <option value="AreaB">Area B: Meeting Rooms</option>
-                <option value="AreaC">Area C: Hotel Rooms</option>                             
+                <option value="AreaC">Area C: Hotel Rooms</option>
               </select>
             </div>
           </div>
@@ -470,19 +471,19 @@
 
       <div class="row" id="realTime">
         <!-- Sensor boxes will be generated here -->
+      </div>
     </div>
-</div>
 
-<script>
-  function generateSensorBoxes() {
-      for (let id = 7; id <= 23; id++) {
+    <script>
+      function generateSensorBoxes() {
+        for (let id = 7; id <= 23; id++) {
           let categoryClass = '';
           if ([7, 9, 12, 14, 15, 16].includes(id)) {
-              categoryClass = 'AreaA';
+            categoryClass = 'AreaA';
           } else if ([13, 17, 23].includes(id)) {
-              categoryClass = 'AreaB';
+            categoryClass = 'AreaB';
           } else {
-              categoryClass = 'AreaC';
+            categoryClass = 'AreaC';
           }
           const sensorBox = document.createElement('div');
           sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
@@ -490,30 +491,30 @@
               <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
           `;
           document.getElementById('realTime').appendChild(sensorBox);
+        }
       }
-  }
 
-  function filterSelection(category) {
-      const sensorBoxes = document.querySelectorAll('.sensor-box');
-      sensorBoxes.forEach(box => {
+      function filterSelection(category) {
+        const sensorBoxes = document.querySelectorAll('.sensor-box');
+        sensorBoxes.forEach(box => {
           if (category === 'AllSensors' || box.classList.contains(category)) {
-              box.style.display = 'block';
+            box.style.display = 'block';
           } else {
-              box.style.display = 'none';
+            box.style.display = 'none';
           }
-      });
-  }
+        });
+      }
 
-  // Call the function to generate sensor boxes when the page loads
-  generateSensorBoxes();
-</script>
+      // Call the function to generate sensor boxes when the page loads
+      generateSensorBoxes();
+    </script>
 
-  <footer>
-    <!--Log for testing
+    <footer>
+      <!--Log for testing
     <div id="counter"></div>
     <div id="log">pain</div>
     -->
-  </footer>
+    </footer>
 </body>
 
 </html>
