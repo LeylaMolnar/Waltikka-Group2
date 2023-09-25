@@ -89,18 +89,41 @@ box-shadow: 3px 3px #F3F2F1;
   margin-left: 15px;
 }
 
-@media screen and (max-width: 500px) {
-.switch {
-    width: auto;
-}
-.switchDiv{
-  text-align: center;
-}
-.top-droplist{
-  text-align: center;
-  margin-left: 0px;
-}
-}
+@media screen and (max-width: 500px) and (min-width: 400px){
+  .switch {
+      width: auto;
+  }
+  .switchDiv{
+    text-align: center;
+  }
+  .top-droplist{
+    text-align: center;
+    margin-left: 0px;
+  
+  }
+  div.box{
+    margin-left: 40px;
+  }
+  }
+  @media screen and (max-width: 400px) {
+    .switch {
+        width: auto;
+    }
+    .switchDiv{
+      text-align: center;
+    }
+    .top-droplist{
+      text-align: center;
+      margin-left: -15px;
+    
+    }
+    div.box{
+      margin-left: 30px;
+    }
+    button#btn{
+      margin-left: 12px;
+    }
+    }
 
 .card{
 background: rgba(0,0,0,0) !important;
