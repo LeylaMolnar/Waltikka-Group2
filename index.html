@@ -74,15 +74,13 @@
                 var btn = document.getElementById("btn");
                 if (btn.innerHTML === "View Historical Data") {
                   btn.innerHTML = "View Real-time Dashboard";
+                  displayChart(); // Call the chart display function when switching to historical data
                 } else {
                   btn.innerHTML = "View Historical Data";
-                }
 
-                var x = document.getElementById("powerBI");
-                if (x.style.display === "none") {
-                  x.style.display = "block";
-                } else {
-                  x.style.display = "none";
+                  // Hide the chart container when switching back to real-time dashboard
+                  const chartContainer = document.getElementById("myChart");
+                  chartContainer.style.display = "none";
                 }
                 var y = document.getElementById("realTime");
                 if (y.style.display === "none") {
@@ -365,13 +363,50 @@
       setInterval(() => fetchDataForAllRooms(), 160000);
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 
     <!--JavaScript historical data report-->
-    <script id="powerBI">
-    
-    
+    <script>
+      let chart = null; // Variable to store the chart instance
 
+      function displayChart() {
+        if (chart !== null) {
+          // If the chart already exists, destroy it before creating a new one
+          chart.destroy();
+        }
 
+        // Your chart data and options here
+        const xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+
+        chart = new Chart("myChart", {
+          type: "line",
+          data: {
+            labels: xValues,
+            datasets: [{
+              data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
+              borderColor: "red",
+              fill: false
+            }, {
+              data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
+              borderColor: "green",
+              fill: false
+            }, {
+              data: [300, 700, 2000, 5000, 6000, 4000, 2000, 1000, 200, 100],
+              borderColor: "blue",
+              fill: false
+            }]
+          },
+          options: {
+            legend: { display: false }
+          }
+        });
+
+        // Show the chart container
+        const chartContainer = document.getElementById("myChart");
+        chartContainer.style.display = "block";
+      }
     </script>
 
     <!--Dismissing alerts-->
