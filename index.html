@@ -43,12 +43,11 @@
             <div>
               <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select"
-                onchange="filterSelection(this.value)">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
                 <option value="AreaA">Area A: Lobby and Restaurant</option>
                 <option value="AreaB">Area B: Meeting Rooms</option>
-                <option value="AreaC">Area C: Hotel Rooms</option>
+                <option value="AreaC">Area C: Hotel Rooms</option>                             
               </select>
             </div>
           </div>
@@ -62,13 +61,15 @@
                 var btn = document.getElementById("btn");
                 if (btn.innerHTML === "View Historical Data") {
                   btn.innerHTML = "View Real-time Dashboard";
-                  displayChart(); // Call the chart display function when switching to historical data
                 } else {
                   btn.innerHTML = "View Historical Data";
+                }
 
-                  // Hide the chart container when switching back to real-time dashboard
-                  const chartContainer = document.getElementById("myChart");
-                  chartContainer.style.display = "none";
+                var x = document.getElementById("powerBI");
+                if (x.style.display === "none") {
+                  x.style.display = "block";
+                } else {
+                  x.style.display = "none";
                 }
                 var y = document.getElementById("realTime");
                 if (y.style.display === "none") {
@@ -157,77 +158,6 @@
           }
         } catch (error) {
           console.error('Error:', error);
-        }
-      }
-
-      // Function to display room data in Bootstrap boxes
-      function displayRoomData(room, data) {
-        const boxId = `box-${room.id}`;
-        const boxElement = document.getElementById(boxId);
-
-        let tempMaxThreshold = 23;
-        let tempMinThreshold = 20;
-        let humidMaxThreshold = 65;
-        let co2MaxThreshold = 550;
-
-        if (boxElement) {
-          //Visual alerts
-          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
-            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
-            boxElement.innerHTML = `                  
-            <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${room.name}</h5>`
-            //temp too high
-            if (data[0][1] > tempMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
-            }
-            //temp too low
-            else if (data[0][1] < tempMinThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
-            }
-
-            //humid too high
-            if (data[0][2] > humidMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
-            }
-            //co2 too high
-            if (data[0][3] > co2MaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">CO2: ${data[0][3]}</p>`;
-            }
-            boxElement.innerHTML += `
-                            </div>
-                    </div>`;
-          }
-          //No alerts
-          else {
-            boxElement.innerHTML = `
-                      <div class="card" style="background-color: #66C1DC !important">
-                          <div class="card-body">
-                              <h5 class="card-title">${room.name}</h5>
-                              <p class="card-text">Temperature: ${data[0][1]}</p>
-                              <p class="card-text">Humidity: ${data[0][2]}</p>
-                              <p class="card-text">CO2: ${data[0][3]}</p>
-                          </div>
-                      </div>
-                  `;
-          }
         }
       }
 
@@ -402,56 +332,15 @@
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
 
-      //Fetch data every 10 seconds
+      //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 160000);
+      setInterval(() => fetchDataForAllRooms(), 30000);
 
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-    </script>
-    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 
-    <!--JavaScript historical data report-->
-    <script>
-      let chart = null; // Variable to store the chart instance
-
-      function displayChart() {
-        if (chart !== null) {
-          // If the chart already exists, destroy it before creating a new one
-          chart.destroy();
-        }
-
-        // Your chart data and options here
-        const xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-
-        chart = new Chart("myChart", {
-          type: "line",
-          data: {
-            labels: xValues,
-            datasets: [{
-              data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
-              borderColor: "red",
-              fill: false
-            }, {
-              data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
-              borderColor: "green",
-              fill: false
-            }, {
-              data: [300, 700, 2000, 5000, 6000, 4000, 2000, 1000, 200, 100],
-              borderColor: "blue",
-              fill: false
-            }]
-          },
-          options: {
-            legend: { display: false }
-          }
-        });
-
-        // Show the chart container
-        const chartContainer = document.getElementById("myChart");
-        chartContainer.style.display = "block";
-      }
-    </script>
+    <!--Sample powerBI report-->
+    <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
+      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
     <!--Dismissing alerts-->
     <script>
@@ -471,19 +360,19 @@
 
       <div class="row" id="realTime">
         <!-- Sensor boxes will be generated here -->
-      </div>
     </div>
+</div>
 
-    <script>
-      function generateSensorBoxes() {
-        for (let id = 7; id <= 23; id++) {
+<script>
+  function generateSensorBoxes() {
+      for (let id = 7; id <= 23; id++) {
           let categoryClass = '';
           if ([7, 9, 12, 14, 15, 16].includes(id)) {
-            categoryClass = 'AreaA';
+              categoryClass = 'AreaA';
           } else if ([13, 17, 23].includes(id)) {
-            categoryClass = 'AreaB';
+              categoryClass = 'AreaB';
           } else {
-            categoryClass = 'AreaC';
+              categoryClass = 'AreaC';
           }
           const sensorBox = document.createElement('div');
           sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
@@ -491,30 +380,30 @@
               <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
           `;
           document.getElementById('realTime').appendChild(sensorBox);
-        }
       }
+  }
 
-      function filterSelection(category) {
-        const sensorBoxes = document.querySelectorAll('.sensor-box');
-        sensorBoxes.forEach(box => {
+  function filterSelection(category) {
+      const sensorBoxes = document.querySelectorAll('.sensor-box');
+      sensorBoxes.forEach(box => {
           if (category === 'AllSensors' || box.classList.contains(category)) {
-            box.style.display = 'block';
+              box.style.display = 'block';
           } else {
-            box.style.display = 'none';
+              box.style.display = 'none';
           }
-        });
-      }
+      });
+  }
 
-      // Call the function to generate sensor boxes when the page loads
-      generateSensorBoxes();
-    </script>
+  // Call the function to generate sensor boxes when the page loads
+  generateSensorBoxes();
+</script>
 
-    <footer>
-      <!--Log for testing
+  <footer>
+    <!--Log for testing
     <div id="counter"></div>
     <div id="log">pain</div>
     -->
-    </footer>
+  </footer>
 </body>
 
 </html>
