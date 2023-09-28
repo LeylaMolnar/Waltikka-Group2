@@ -16,6 +16,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </head>
 
 <body>
@@ -40,27 +41,13 @@
         <div class="col">
           <div class="top-droplist">
             <div>
-              <label for="sensor-select" style="font-size: small;">Filter:</label>
+              <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
-                <option value="Sensor1">Sensor 1</option>
-                <option value="Sensor2">Sensor 2</option>
-                <option value="Sensor3">Sensor 3</option>
-                <option value="Sensor4">Sensor 4</option>
-                <option value="Sensor5">Sensor 5</option>
-                <option value="Sensor6">Sensor 6</option>
-                <option value="Sensor7">Sensor 7</option>
-                <option value="Sensor8">Sensor 8</option>
-                <option value="Sensor9">Sensor 9</option>
-                <option value="Sensor10">Sensor 10</option>
-                <option value="Sensor11">Sensor 11</option>
-                <option value="Sensor12">Sensor 12</option>
-                <option value="Sensor13">Sensor 13</option>
-                <option value="Sensor14">Sensor 14</option>
-                <option value="Sensor15">Sensor 15</option>
-                <option value="Sensor16">Sensor 16</option>
-                <option value="Sensor17">Sensor 17</option>
+                <option value="AreaA">Area A: Lobby and Restaurant</option>
+                <option value="AreaB">Area B: Meeting Rooms</option>
+                <option value="AreaC">Area C: Hotel Rooms</option>                             
               </select>
             </div>
           </div>
@@ -97,6 +84,8 @@
         </div>
       </div>
     </div>
+
+    <audio id="notif" src="notifsound2.mp3"></audio>
 
     <!-- Script for rooms' data starts here-->
 
@@ -175,7 +164,8 @@
         }
       }
 
-      // Function to display room data in Bootstrap boxes
+
+      // Function to display room data in Bootstrap boxes + Notifications
       function displayRoomData(room, data) {
         const boxId = `box-${room.id}`;
         const boxElement = document.getElementById(boxId);
@@ -251,17 +241,31 @@
             const humidity = (sumHumidity / countHumidity).toFixed(0);
             const co2 = (sumCo2 / countCo2).toFixed(0);
 
-
             let temperatureText = `Temperature: ${temperature}`;
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
+            // Checks rooms' conditions and display alerts
+            if (mostRecentData[1] > 23) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too high in ${room.name}: ${mostRecentData[1]}`);
+            } else if (mostRecentData[1] < 20) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too low in ${room.name}: ${mostRecentData[1]}`);
+            }
 
-            if (temperature > tempMaxThreshold || temperature < tempMinThreshold || humidity > humidMaxThreshold || co2 > co2MaxThreshold) {
+            if (mostRecentData[2] > 65) {
+              document.getElementById('notif').play();
+              window.alert(`Humidity is too high in ${room.name}: ${mostRecentData[2]}`);
+            }
 
-              //Add room to roomsAlert list
-              roomsAlert.push(room.name);
+            if (mostRecentData[3] > 550) {
+              document.getElementById('notif').play();
+              window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
+            }
 
+            // Blinking icons for alerts
+            if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
               if (temperature > tempMaxThreshold) {
@@ -308,11 +312,10 @@
         }
       }
 
-      //For testing
-      /*
+
+      //for testing
       let counter = 0;
       let reset = 0;
-      */
 
       // Function to fetch data for all rooms
       async function fetchDataForAllRooms() {
@@ -326,20 +329,6 @@
             await fetchRoomData(room);
           }
         }
-        //displayDataForAllRooms();
-        //Log for testing
-        /*
-        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
-        for (let i = 7; i <= 23; i++) {
-
-          if (localStorage.getItem(`room-${i}-data`) === null) {
-            document.getElementById("log").innerHTML += `${i} `;
-          }
-
-        }
-        document.getElementById("log").innerHTML += `</p>`;
-        */
-        //Log for testing over 
       }
 
       // This ensures the page is fully loaded before fetching data
@@ -347,15 +336,15 @@
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
 
-      //Fetch data every 10 seconds
+      //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 10000);
+      setInterval(() => fetchDataForAllRooms(), 30000);
 
     </script>
 
     <!--Sample powerBI report-->
     <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
-      src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
     <!--Dismissing alerts-->
     <script>
@@ -373,42 +362,45 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-
-      <script>
-        //function displayDataForAllRooms() {
-          //test
-          //roomsAlert.push(17);
-          //--
-          
-          document.getElementById("realTime").innerHTML = ``;
-
-          //Rooms with alerts
-          for (let i = 0; i < rooms.length; i++) {
-            if (roomsAlert.includes(rooms[i].id)) {
-              document.getElementById("realTime").innerHTML += `
-            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${rooms[i].id}" onclick="dismissAlert(this.id)">Sensor ${rooms[i].id}</div>
-            </div>
-            `;
-            }
-          }
-          //Rooms without alerts
-          for (let i = 0; i < rooms.length; i++) {
-            if (!roomsAlert.includes(rooms[i].id)) {
-              document.getElementById("realTime").innerHTML += `
-            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${rooms[i].id}" onclick="dismissAlert(this.id)">Sensor ${rooms[i].id}</div>
-            </div>
-            `;
-            }
-          }
-
-
-
-        //}
-      </script>
+      <div class="row" id="realTime">
+        <!-- Sensor boxes will be generated here -->
     </div>
-  </div>
+</div>
+
+<script>
+  function generateSensorBoxes() {
+      for (let id = 7; id <= 23; id++) {
+          let categoryClass = '';
+          if ([7, 9, 12, 14, 15, 16].includes(id)) {
+              categoryClass = 'AreaA';
+          } else if ([13, 17, 23].includes(id)) {
+              categoryClass = 'AreaB';
+          } else {
+              categoryClass = 'AreaC';
+          }
+          const sensorBox = document.createElement('div');
+          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+          sensorBox.innerHTML = `
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+          `;
+          document.getElementById('realTime').appendChild(sensorBox);
+      }
+  }
+
+  function filterSelection(category) {
+      const sensorBoxes = document.querySelectorAll('.sensor-box');
+      sensorBoxes.forEach(box => {
+          if (category === 'AllSensors' || box.classList.contains(category)) {
+              box.style.display = 'block';
+          } else {
+              box.style.display = 'none';
+          }
+      });
+  }
+
+  // Call the function to generate sensor boxes when the page loads
+  generateSensorBoxes();
+</script>
 
   <footer>
 
