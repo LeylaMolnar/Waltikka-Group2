@@ -43,11 +43,12 @@
             <div>
               <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select"
+                onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
                 <option value="AreaA">Area A: Lobby and Restaurant</option>
                 <option value="AreaB">Area B: Meeting Rooms</option>
-                <option value="AreaC">Area C: Hotel Rooms</option>                             
+                <option value="AreaC">Area C: Hotel Rooms</option>
               </select>
             </div>
           </div>
@@ -90,7 +91,70 @@
     <!-- Script for rooms' data starts here-->
 
 
+
+    <!--Sample powerBI report-->
+    <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
+      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9"
+      frameborder="0" allowFullScreen="true"></iframe>
+
+    <div id="realTime" class="row justify-content-around container">
+
+      <div class="row" id="realTime">
+        <!-- Sensor boxes will be generated here -->
+      </div>
+    </div>
+
+
     <script>
+
+
+
+      function generateSensorBoxes() {
+        //Rooms with alerts
+        for (let i = 0; i < rooms.length; i++) {
+          //alert("help");
+          for (let j = 0; j < roomsAlert.length; j++) {
+            //console.log(typeof parseInt(`${rooms[i]}`));
+            //console.log(typeof parseInt(`${roomsAlert[j]}`));
+            console.log(`Roomslaert: ` + `${roomsAlert[j]}` + `\tRooms: ` + `${rooms[i].id}`);
+            if (rooms[i].id == roomsAlert[j]) {
+              //alert("help2");
+
+              console.log(roomsAlert[j]);
+            }
+
+          }
+
+        }
+        alert("please1");
+
+
+        for (let id = 7; id <= 23; id++) {
+          if (roomsAlert.includes(rooms[id].id)) {
+
+
+            let categoryClass = '';
+            if ([7, 9, 12, 14, 15, 16].includes(id)) {
+              categoryClass = 'AreaA';
+            } else if ([13, 17, 23].includes(id)) {
+              categoryClass = 'AreaB';
+            } else {
+              categoryClass = 'AreaC';
+            }
+            //alert("please");
+            const sensorBox = document.createElement('div');
+            sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+            sensorBox.innerHTML = `
+            <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+          `;
+            document.getElementById('realTime').appendChild(sensorBox);
+          }
+        }
+      }
+
+
+
+
       // Array of room IDs and corresponding names
       let rooms = [
         { id: 7, name: "Ala-aula" },
@@ -113,7 +177,7 @@
       ];
 
       //Array for rooms that currently have an alert
-      let roomsAlert = [0];
+      let roomsAlert = [];
 
       // Base URL for the API
       const baseUrl = "https://iot.research.hamk.fi/api/v1/hamk/rooms/tsdata";
@@ -152,6 +216,74 @@
                 const values = series.values;
 
                 localStorage.setItem(`room-${room.id}-data`, JSON.stringify(values));
+
+
+
+
+                //THIS IS THE SAME AS THE ONE DISPLAYROOMDATA ---------------------------------------------------------------
+
+                // Initialize variables for sum and count of temperature values
+                let sumTemperature = 0;
+                let countTemperature = 0;
+
+                // Iterate through data to extract and sum up temperature values
+                values.forEach((dataEntry) => {
+                  // Extract the temperature value from mostRecentData[1]
+                  const temperature = dataEntry[1];
+
+                  // Add the temperature value to the sum
+                  sumTemperature += temperature;
+
+                  // Increment the count of temperature values
+                  countTemperature++;
+                });
+
+                let sumHumidity = 0;
+                let countHumidity = 0;
+
+                // Iterate through data to extract and sum up temperature values
+                values.forEach((dataEntry) => {
+                  // Extract the temperature value from mostRecentData[1]
+                  const humidity = dataEntry[2];
+
+                  // Add the temperature value to the sum
+                  sumHumidity += humidity;
+
+                  // Increment the count of temperature values
+                  countHumidity++;
+                });
+
+                let sumCo2 = 0;
+                let countCo2 = 0;
+
+                // Iterate through data to extract and sum up temperature values
+                values.forEach((dataEntry) => {
+                  // Extract the temperature value from mostRecentData[1]
+                  const co2 = dataEntry[3];
+
+                  // Add the temperature value to the sum
+                  sumCo2 += co2;
+
+                  // Increment the count of temperature values
+                  countCo2++;
+                });
+                const temperature = (sumTemperature / countTemperature).toFixed(1);
+                const humidity = (sumHumidity / countHumidity).toFixed(0);
+                const co2 = (sumCo2 / countCo2).toFixed(0);
+
+                if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
+                  //Add room.id to array for rooms with alerts
+                  roomsAlert.push(`${room.id}`);
+                }
+
+                //THIS IS THE SAME AS THE ONE DISPLAYROOMDATA ENDS HERE ---------------------------------------------------------------
+
+                //generateSensorBoxes();
+
+
+
+
+
 
                 displayRoomData(room, values);
               }
@@ -324,30 +456,48 @@
           const storedData = localStorage.getItem(`room-${room.id}-data`);
           if (storedData) {
             const data = JSON.parse(storedData);
+
+
+
+
+            generateSensorBoxes();
+
+
+
             displayRoomData(room, data);
           } else {
+
             await fetchRoomData(room);
+            generateSensorBoxes();
           }
         }
+
+
+
+        document.getElementById("log").innerHTML = "Nothing";
+        for (let i = 0; i < roomsAlert.length; i++) {
+          document.getElementById("log").innerHTML += roomsAlert[i];
+        }
+        roomsAlert = [];
       }
+      //generateSensorBoxes();
+
 
       // This ensures the page is fully loaded before fetching data
       document.addEventListener('DOMContentLoaded', () => {
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
+        //generateSensorBoxes();
+        //alert("help me");
       });
 
       //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
       setInterval(() => fetchDataForAllRooms(), 30000);
 
-    </script>
 
-    <!--Sample powerBI report-->
-    <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
-      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
-    <!--Dismissing alerts-->
-    <script>
+      //Dismissing alerts
+
 
       function dismissAlert(boxId) {
         //Replace blinking icon with static '!'
@@ -360,54 +510,42 @@
     </script>
 
     <!--Dashboard layout-->
-    <div id="realTime" class="row justify-content-around container">
 
-      <div class="row" id="realTime">
-        <!-- Sensor boxes will be generated here -->
-    </div>
-</div>
 
-<script>
-  function generateSensorBoxes() {
-      for (let id = 7; id <= 23; id++) {
-          let categoryClass = '';
-          if ([7, 9, 12, 14, 15, 16].includes(id)) {
-              categoryClass = 'AreaA';
-          } else if ([13, 17, 23].includes(id)) {
-              categoryClass = 'AreaB';
-          } else {
-              categoryClass = 'AreaC';
-          }
-          const sensorBox = document.createElement('div');
-          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
-          sensorBox.innerHTML = `
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
-          `;
-          document.getElementById('realTime').appendChild(sensorBox);
-      }
-  }
 
-  function filterSelection(category) {
-      const sensorBoxes = document.querySelectorAll('.sensor-box');
-      sensorBoxes.forEach(box => {
+
+
+
+    <script>
+
+
+
+
+
+
+
+
+      function filterSelection(category) {
+        const sensorBoxes = document.querySelectorAll('.sensor-box');
+        sensorBoxes.forEach(box => {
           if (category === 'AllSensors' || box.classList.contains(category)) {
-              box.style.display = 'block';
+            box.style.display = 'block';
           } else {
-              box.style.display = 'none';
+            box.style.display = 'none';
           }
-      });
-  }
+        });
+      }
 
-  // Call the function to generate sensor boxes when the page loads
-  generateSensorBoxes();
-</script>
+      // Call the function to generate sensor boxes when the page loads
+      //generateSensorBoxes();
+    </script>
 
-  <footer>
+    <footer>
 
-    <div id="counter"></div>
-    <div id="log">pain</div>
+      <div id="counter"></div>
+      <div id="log">pain</div>
 
-  </footer>
+    </footer>
 </body>
 
 </html>
