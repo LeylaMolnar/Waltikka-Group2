@@ -161,77 +161,6 @@
         }
       }
 
-      // Function to display room data in Bootstrap boxes
-      function displayRoomData(room, data) {
-        const boxId = `box-${room.id}`;
-        const boxElement = document.getElementById(boxId);
-
-        let tempMaxThreshold = 23;
-        let tempMinThreshold = 20;
-        let humidMaxThreshold = 65;
-        let co2MaxThreshold = 550;
-
-        if (boxElement) {
-          //Visual alerts
-          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
-            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
-            boxElement.innerHTML = `                  
-            <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${room.name}</h5>`
-            //temp too high
-            if (data[0][1] > tempMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
-            }
-            //temp too low
-            else if (data[0][1] < tempMinThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
-            }
-
-            //humid too high
-            if (data[0][2] > humidMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
-            }
-            //co2 too high
-            if (data[0][3] > co2MaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">CO2: ${data[0][3]}</p>`;
-            }
-            boxElement.innerHTML += `
-                            </div>
-                    </div>`;
-          }
-          //No alerts
-          else {
-            boxElement.innerHTML = `
-                      <div class="card" style="background-color: #66C1DC !important">
-                          <div class="card-body">
-                              <h5 class="card-title">${room.name}</h5>
-                              <p class="card-text">Temperature: ${data[0][1]}</p>
-                              <p class="card-text">Humidity: ${data[0][2]}</p>
-                              <p class="card-text">CO2: ${data[0][3]}</p>
-                          </div>
-                      </div>
-                  `;
-          }
-        }
-      }
-
 
       // Function to display room data in Bootstrap boxes + Notifications
       function displayRoomData(room, data) {
@@ -403,15 +332,15 @@
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
 
-      //Fetch data every 10 seconds
+      //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 10000);
+      setInterval(() => fetchDataForAllRooms(), 30000);
 
     </script>
 
     <!--Sample powerBI report-->
     <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
-      src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
     <!--Dismissing alerts-->
     <script>
