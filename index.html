@@ -396,8 +396,21 @@
               window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
             }
 
+
+
+
+
+
             // Blinking icons for alerts
             if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
+              
+              //add to roomalerts
+
+
+              //move rest to separate method, only call that method after all room data has been calculated and stuff somehow
+              //like fetch*all*roomdata or something, then loop through it all with the below thing in a method
+              
+              
               boxElement.style.backgroundColor = "#F66D6E";
               //temp too high
               if (temperature > tempMaxThreshold) {
