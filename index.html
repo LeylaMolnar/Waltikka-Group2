@@ -161,7 +161,7 @@
         try {
           const currentDate = new Date();
           const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 30 * 60000);
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 24 * 60 * 60000);
           const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
           const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
@@ -439,7 +439,7 @@
 
       //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 30000);
+      setInterval(() => fetchDataForAllRooms(),  6 * 60 * 60000);
 
 
       function filterSelection(category) {
