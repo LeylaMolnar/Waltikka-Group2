@@ -53,8 +53,6 @@ body {
   padding-left: 50px;
 }
 
-
-
 .switchDiv {
   width: 100%;
   text-align: right;
@@ -114,11 +112,11 @@ box-shadow: 3px 3px #F3F2F1;
     }
     .top-droplist{
       text-align: center;
-      margin-left: -15px;
+      margin-left: -22px;
     
     }
     div.box{
-      margin-left: 30px;
+      margin-left: 25px;
     }
     button#btn{
       margin-left: 12px;
@@ -153,6 +151,7 @@ box-shadow: 3px 3px #F3F2F1;
      }
     }
 
+
 .card{
 background: rgba(0,0,0,0) !important;
 border-style: none !important;
@@ -178,4 +177,3 @@ to {
   visibility: hidden;
 }
 }
-

@@ -85,6 +85,8 @@
       </div>
     </div>
 
+    <audio id="notif" src="notifsound2.mp3"></audio>
+
     <!-- Script for rooms' data starts here-->
 
 
@@ -159,7 +161,8 @@
         }
       }
 
-      // Function to display room data in Bootstrap boxes
+
+      // Function to display room data in Bootstrap boxes + Notifications
       function displayRoomData(room, data) {
         const boxId = `box-${room.id}`;
         const boxElement = document.getElementById(boxId);
@@ -170,63 +173,138 @@
         let co2MaxThreshold = 550;
 
         if (boxElement) {
-          //Visual alerts
-          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
-            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
-            boxElement.innerHTML = `                  
-            <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${room.name}</h5>`
-            //temp too high
-            if (data[0][1] > tempMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
-            }
-            //temp too low
-            else if (data[0][1] < tempMinThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
-            }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
+          if (data && data.length > 0) {
+            const mostRecentData = data[data.length - 1]; // Get the last data entry
+
+            // Format the ISO time to display time before date in Finnish time format
+            const isoTime = mostRecentData[0];
+            const dateObj = new Date(isoTime);
+            const formattedTime = dateObj.toLocaleString('fi-FI', {
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+            const formattedDate = dateObj.toLocaleString('fi-FI', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            });
+            // Initialize variables for sum and count of temperature values
+            let sumTemperature = 0;
+            let countTemperature = 0;
+
+            // Iterate through data to extract and sum up temperature values
+            data.forEach((dataEntry) => {
+              // Extract the temperature value from mostRecentData[1]
+              const temperature = dataEntry[1];
+
+              // Add the temperature value to the sum
+              sumTemperature += temperature;
+
+              // Increment the count of temperature values
+              countTemperature++;
+            });
+
+            let sumHumidity = 0;
+            let countHumidity = 0;
+
+            // Iterate through data to extract and sum up temperature values
+            data.forEach((dataEntry) => {
+              // Extract the temperature value from mostRecentData[1]
+              const humidity = dataEntry[2];
+
+              // Add the temperature value to the sum
+              sumHumidity += humidity;
+
+              // Increment the count of temperature values
+              countHumidity++;
+            });
+
+            let sumCo2 = 0;
+            let countCo2 = 0;
+
+            // Iterate through data to extract and sum up temperature values
+            data.forEach((dataEntry) => {
+              // Extract the temperature value from mostRecentData[1]
+              const co2 = dataEntry[3];
+
+              // Add the temperature value to the sum
+              sumCo2 += co2;
+
+              // Increment the count of temperature values
+              countCo2++;
+            });
+            // Calculate the mean temperature
+            const temperature = (sumTemperature / countTemperature).toFixed(1);
+            const humidity = (sumHumidity / countHumidity).toFixed(0);
+            const co2 = (sumCo2 / countCo2).toFixed(0);
+
+            let temperatureText = `Temperature: ${temperature}`;
+            let humidityText = `Humidity: ${humidity}`;
+            let co2Text = `CO2: ${mostRecentData[3]}`;
+
+            // Checks rooms' conditions and display alerts
+            if (mostRecentData[1] > 23) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too high in ${room.name}: ${mostRecentData[1]}`);
+            } else if (mostRecentData[1] < 20) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too low in ${room.name}: ${mostRecentData[1]}`);
             }
 
-            //humid too high
-            if (data[0][2] > humidMaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
+            if (mostRecentData[2] > 65) {
+              document.getElementById('notif').play();
+              window.alert(`Humidity is too high in ${room.name}: ${mostRecentData[2]}`);
             }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
+
+            if (mostRecentData[3] > 550) {
+              document.getElementById('notif').play();
+              window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
             }
-            //co2 too high
-            if (data[0][3] > co2MaxThreshold) {
-              boxElement.innerHTML +=
-                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
+
+            // Blinking icons for alerts
+            if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
+              boxElement.style.backgroundColor = "#F66D6E";
+              //hello???
+              //temp too high
+              if (temperature > tempMaxThreshold) {
+                temperatureText = `<span class="blink">🔥</span>Temperature: ${temperature}<span class="blink">🔥</span>`;
+              }
+              //temp too low
+              else if (temperature < tempMinThreshold) {
+                temperatureText = `<span class="blink">❄</span>Temperature: ${temperature}<span class="blink">❄</span>`;
+              }
+
+              //humid too high
+              if (humidity > humidMaxThreshold) {
+                humidityText = `<span class="blink">💧</span>Humidity: ${humidity}<span class="blink">💧</span>`;
+              }
+
+              //co2 too high
+              if (co2 > co2MaxThreshold) {
+                co2Text = `<span class="blink">💀</span>CO2: ${co2}<span class="blink">💀</span>`;
+              }
             }
-            else {
-              boxElement.innerHTML +=
-                `<p class="card-text">CO2: ${data[0][3]}</p>`;
-            }
-            boxElement.innerHTML += `
-                            </div>
-                    </div>
-                     `;
-          }
-          //No alerts
-          else {
+
             boxElement.innerHTML = `
-                      <div class="card" style="background-color: #66C1DC !important">
-                          <div class="card-body">
-                              <h5 class="card-title">${room.name}</h5>
-                              <p class="card-text">Temperature: ${data[0][1]}</p>
-                              <p class="card-text">Humidity: ${data[0][2]}</p>
-                              <p class="card-text">CO2: ${data[0][3]}</p>
-                          </div>
-                      </div>
-                  `;
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${room.name}</h5>
+                        <p class="card-text">${temperatureText}</p>
+                        <p class="card-text">${humidityText}</p>
+                        <p class="card-text">${co2Text}</p>
+                    </div>
+                </div>
+            `;
+          } else {
+            // Display a placeholder message or default values when data is not available
+            boxElement.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${room.name}</h5>
+                        <p class="card-text">Data not available</p>
+                    </div>
+                </div>
+            `;
           }
         }
       }
@@ -248,7 +326,6 @@
             await fetchRoomData(room);
           }
         }
-
       }
 
       // This ensures the page is fully loaded before fetching data
@@ -256,15 +333,15 @@
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
 
-      //Fetch data every 10 seconds
+      //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 10000);
+      setInterval(() => fetchDataForAllRooms(), 30000);
 
     </script>
 
     <!--Sample powerBI report-->
     <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
-      src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9" frameborder="0" allowFullScreen="true"></iframe>
 
     <!--Dismissing alerts-->
     <script>
