@@ -16,6 +16,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 </head>
 
 <body>
@@ -40,27 +41,13 @@
         <div class="col">
           <div class="top-droplist">
             <div>
-              <label for="sensor-select" style="font-size: small;">Filter:</label>
+              <label for="group-select" style="font-size: small;">Filter:</label>
               <br>
-              <select name="Sensors" id="sensor-select" style="padding: 15px 35px;">
+              <select name="SensorGroups" style="padding: 15px 35px;" id="categorySelect group-select" onchange="filterSelection(this.value)">
                 <option value="AllSensors">--All Sensors--</option>
-                <option value="Sensor1">Sensor 1</option>
-                <option value="Sensor2">Sensor 2</option>
-                <option value="Sensor3">Sensor 3</option>
-                <option value="Sensor4">Sensor 4</option>
-                <option value="Sensor5">Sensor 5</option>
-                <option value="Sensor6">Sensor 6</option>
-                <option value="Sensor7">Sensor 7</option>
-                <option value="Sensor8">Sensor 8</option>
-                <option value="Sensor9">Sensor 9</option>
-                <option value="Sensor10">Sensor 10</option>
-                <option value="Sensor11">Sensor 11</option>
-                <option value="Sensor12">Sensor 12</option>
-                <option value="Sensor13">Sensor 13</option>
-                <option value="Sensor14">Sensor 14</option>
-                <option value="Sensor15">Sensor 15</option>
-                <option value="Sensor16">Sensor 16</option>
-                <option value="Sensor17">Sensor 17</option>
+                <option value="AreaA">Area A: Lobby and Restaurant</option>
+                <option value="AreaB">Area B: Meeting Rooms</option>
+                <option value="AreaC">Area C: Hotel Rooms</option>                             
               </select>
             </div>
           </div>
@@ -98,6 +85,8 @@
       </div>
     </div>
 
+    <audio id="notif" src="notifsound2.mp3"></audio>
+
     <!-- Script for rooms' data starts here-->
 
 
@@ -131,7 +120,7 @@
         try {
           const currentDate = new Date();
           const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 24 * 60 * 60000);
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 30 * 60000);
           const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
           const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
@@ -183,50 +172,122 @@
         let co2MaxThreshold = 550;
 
         if (boxElement) {
-        if (data && data.length > 0) {
+          //Visual alerts
+          if (data[0][1] > tempMaxThreshold || data[0][1] < tempMinThreshold || data[0][2] > humidMaxThreshold || data[0][3] > co2MaxThreshold) {
+            document.getElementById(`box-${room.id}`).style.backgroundColor = "#F66D6E";
+            boxElement.innerHTML = `                  
+            <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${room.name}</h5>`
+            //temp too high
+            if (data[0][1] > tempMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">🔥</span>Temperature: ${data[0][1]}<span class="blink">🔥</span></p>`;
+            }
+            //temp too low
+            else if (data[0][1] < tempMinThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">❄</span>Temperature: ${data[0][1]}<span class="blink">❄</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Temperature: ${data[0][1]}</p>`;
+            }
+
+            //humid too high
+            if (data[0][2] > humidMaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">💧</span>Humidity: ${data[0][2]}<span class="blink">💧</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">Humidity: ${data[0][2]}</p>`;
+            }
+            //co2 too high
+            if (data[0][3] > co2MaxThreshold) {
+              boxElement.innerHTML +=
+                `<p class="card-text"><span class="blink">💀</span>CO2: ${data[0][3]}<span class="blink">💀</span></p>`;
+            }
+            else {
+              boxElement.innerHTML +=
+                `<p class="card-text">CO2: ${data[0][3]}</p>`;
+            }
+            boxElement.innerHTML += `
+                            </div>
+                    </div>`;
+          }
+          //No alerts
+          else {
+            boxElement.innerHTML = `
+                      <div class="card" style="background-color: #66C1DC !important">
+                          <div class="card-body">
+                              <h5 class="card-title">${room.name}</h5>
+                              <p class="card-text">Temperature: ${data[0][1]}</p>
+                              <p class="card-text">Humidity: ${data[0][2]}</p>
+                              <p class="card-text">CO2: ${data[0][3]}</p>
+                          </div>
+                      </div>
+                  `;
+          }
+        }
+      }
+
+
+      // Function to display room data in Bootstrap boxes + Notifications
+      function displayRoomData(room, data) {
+        const boxId = `box-${room.id}`;
+        const boxElement = document.getElementById(boxId);
+
+        let tempMaxThreshold = 23;
+        let tempMinThreshold = 20;
+        let humidMaxThreshold = 65;
+        let co2MaxThreshold = 550;
+
+        if (boxElement) {
+          if (data && data.length > 0) {
             const mostRecentData = data[data.length - 1]; // Get the last data entry
-            
+
             // Format the ISO time to display time before date in Finnish time format
             const isoTime = mostRecentData[0];
             const dateObj = new Date(isoTime);
             const formattedTime = dateObj.toLocaleString('fi-FI', {
-                hour: '2-digit',
-                minute: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
             });
             const formattedDate = dateObj.toLocaleString('fi-FI', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
             });
-                      // Initialize variables for sum and count of temperature values
+            // Initialize variables for sum and count of temperature values
             let sumTemperature = 0;
             let countTemperature = 0;
 
             // Iterate through data to extract and sum up temperature values
             data.forEach((dataEntry) => {
-                // Extract the temperature value from mostRecentData[1]
-                const temperature = dataEntry[1];
+              // Extract the temperature value from mostRecentData[1]
+              const temperature = dataEntry[1];
 
-                // Add the temperature value to the sum
-                sumTemperature += temperature;
+              // Add the temperature value to the sum
+              sumTemperature += temperature;
 
-                // Increment the count of temperature values
-                countTemperature++;
+              // Increment the count of temperature values
+              countTemperature++;
             });
-            
+
             let sumHumidity = 0;
             let countHumidity = 0;
 
             // Iterate through data to extract and sum up temperature values
             data.forEach((dataEntry) => {
-                // Extract the temperature value from mostRecentData[1]
-                const humidity = dataEntry[2];
+              // Extract the temperature value from mostRecentData[1]
+              const humidity = dataEntry[2];
 
-                // Add the temperature value to the sum
-                sumHumidity += humidity;
+              // Add the temperature value to the sum
+              sumHumidity += humidity;
 
-                // Increment the count of temperature values
-                countHumidity++;
+              // Increment the count of temperature values
+              countHumidity++;
             });
 
             let sumCo2 = 0;
@@ -234,45 +295,64 @@
 
             // Iterate through data to extract and sum up temperature values
             data.forEach((dataEntry) => {
-                // Extract the temperature value from mostRecentData[1]
-                const co2 = dataEntry[3];
+              // Extract the temperature value from mostRecentData[1]
+              const co2 = dataEntry[3];
 
-                // Add the temperature value to the sum
-                sumCo2 += co2;
+              // Add the temperature value to the sum
+              sumCo2 += co2;
 
-                // Increment the count of temperature values
-                countCo2++;
+              // Increment the count of temperature values
+              countCo2++;
             });
             // Calculate the mean temperature
             const temperature = (sumTemperature / countTemperature).toFixed(1);
             const humidity = (sumHumidity / countHumidity).toFixed(0);
             const co2 = (sumCo2 / countCo2).toFixed(0);
 
-
             let temperatureText = `Temperature: ${temperature}`;
             let humidityText = `Humidity: ${humidity}`;
             let co2Text = `CO2: ${mostRecentData[3]}`;
 
+            // Checks rooms' conditions and display alerts
+            if (mostRecentData[1] > 23) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too high in ${room.name}: ${mostRecentData[1]}`);
+            } else if (mostRecentData[1] < 20) {
+              document.getElementById('notif').play();
+              window.alert(`Temperature is too low in ${room.name}: ${mostRecentData[1]}`);
+            }
+
+            if (mostRecentData[2] > 65) {
+              document.getElementById('notif').play();
+              window.alert(`Humidity is too high in ${room.name}: ${mostRecentData[2]}`);
+            }
+
+            if (mostRecentData[3] > 550) {
+              document.getElementById('notif').play();
+              window.alert(`CO2 level is too high in ${room.name}: ${mostRecentData[3]}`);
+            }
+
+            // Blinking icons for alerts
             if (temperature > 23 || temperature < 20 || humidity > 65 || co2 > 550) {
-                boxElement.style.backgroundColor = "#F66D6E";
-                //temp too high
-                if (temperature > 23) {
-                    temperatureText = `<span class="blink">🔥</span>Temperature: ${temperature}<span class="blink">🔥</span>`;
-                }
-                //temp too low
-                else if (temperature < 20){
-                    temperatureText = `<span class="blink">❄</span>Temperature: ${temperature}<span class="blink">❄</span>`;
-                }
+              boxElement.style.backgroundColor = "#F66D6E";
+              //temp too high
+              if (temperature > tempMaxThreshold) {
+                temperatureText = `<span class="blink">🔥</span>Temperature: ${temperature}<span class="blink">🔥</span>`;
+              }
+              //temp too low
+              else if (temperature < tempMinThreshold) {
+                temperatureText = `<span class="blink">❄</span>Temperature: ${temperature}<span class="blink">❄</span>`;
+              }
 
-                //humid too high
-                if (humidity > 65) {
-                    humidityText = `<span class="blink">💧</span>Humidity: ${humidity}<span class="blink">💧</span>`;
-                }
+              //humid too high
+              if (humidity > humidMaxThreshold) {
+                humidityText = `<span class="blink">💧</span>Humidity: ${humidity}<span class="blink">💧</span>`;
+              }
 
-                //co2 too high
-                if (co2 > 550) {
-                    co2Text = `<span class="blink">💀</span>CO2: ${co2}<span class="blink">💀</span>`;
-                }
+              //co2 too high
+              if (co2 > co2MaxThreshold) {
+                co2Text = `<span class="blink">💀</span>CO2: ${co2}<span class="blink">💀</span>`;
+              }
             }
 
             boxElement.innerHTML = `
@@ -282,11 +362,10 @@
                         <p class="card-text">${temperatureText}</p>
                         <p class="card-text">${humidityText}</p>
                         <p class="card-text">${co2Text}</p>
-                        <p class="card-text">${formattedTime}  ${formattedDate}</p>
                     </div>
                 </div>
             `;
-        } else {
+          } else {
             // Display a placeholder message or default values when data is not available
             boxElement.innerHTML = `
                 <div class="card">
@@ -296,9 +375,9 @@
                     </div>
                 </div>
             `;
+          }
         }
-    }
-}
+      }
 
 
       //for testing
@@ -317,37 +396,18 @@
             await fetchRoomData(room);
           }
         }
-
-
-
-        //For testing
-        document.getElementById("counter").innerHTML = counter + "seconds";
-        counter++;
-
-        document.getElementById("log").innerHTML += new Date().toLocaleTimeString() + `<p>Missing room data: `;
-        for (let i = 7; i <= 23; i++) {
-          
-          if (localStorage.getItem(`room-${i}-data`) === null) {
-            //alert(localStorage.getItem(`room-15-data`));
-            //document.getElementById("log").innerHTML += new Date().toLocaleTimeString();
-            document.getElementById("log").innerHTML += `${i} `;
-          }
-          
-        }
-        document.getElementById("log").innerHTML += `</p>`;
       }
 
       // This ensures the page is fully loaded before fetching data
       document.addEventListener('DOMContentLoaded', () => {
         fetchDataForAllRooms(); // Fetch data for all rooms when the page is loaded
       });
-      //setInterval(fetchDataForAllRooms(), 100);
 
+      //Fetch data every 10 seconds
+      //CHANGE THIS VALUE LATER
       setInterval(() => fetchDataForAllRooms(), 10000);
-      
+
     </script>
-
-
 
     <!--Sample powerBI report-->
     <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
@@ -361,7 +421,7 @@
         const staticAlert = "<b> ! </b>";
         const boxElement = document.getElementById(boxId);
         boxElement.style.backgroundColor = "#66C1DC";
-        boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert).replaceAll(/<placeholder>/g, staticAlert);
+        boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
       }
 
     </script>
@@ -369,22 +429,51 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-around container">
 
-      <script>
-        for (let id = 7; id <= 23; id++) {
-          document.getElementById("realTime").innerHTML += `
-            <div class="col-xl-3 col-lg-4 col-md-6 d-flex justify-content-center">
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
-            </div>
-            `;
-
-        }
-      </script>
+      <div class="row" id="realTime">
+        <!-- Sensor boxes will be generated here -->
     </div>
-  </div>
+</div>
+
+<script>
+  function generateSensorBoxes() {
+      for (let id = 7; id <= 23; id++) {
+          let categoryClass = '';
+          if ([7, 9, 12, 14, 15, 16].includes(id)) {
+              categoryClass = 'AreaA';
+          } else if ([13, 17, 23].includes(id)) {
+              categoryClass = 'AreaB';
+          } else {
+              categoryClass = 'AreaC';
+          }
+          const sensorBox = document.createElement('div');
+          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+          sensorBox.innerHTML = `
+              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+          `;
+          document.getElementById('realTime').appendChild(sensorBox);
+      }
+  }
+
+  function filterSelection(category) {
+      const sensorBoxes = document.querySelectorAll('.sensor-box');
+      sensorBoxes.forEach(box => {
+          if (category === 'AllSensors' || box.classList.contains(category)) {
+              box.style.display = 'block';
+          } else {
+              box.style.display = 'none';
+          }
+      });
+  }
+
+  // Call the function to generate sensor boxes when the page loads
+  generateSensorBoxes();
+</script>
 
   <footer>
+    <!--Log for testing
     <div id="counter"></div>
     <div id="log">pain</div>
+    -->
   </footer>
 </body>
 

@@ -1,127 +1,127 @@
 body {
-    background-color: #3C3C3B !important; 
-    height: 100vh;
-    margin: 0;
+  background-color: #3C3C3B !important; 
+  height: 100vh;
+  margin: 0;
 }
 
 .white-box2 {
-    background-color: #F3F2F1;
-    text-align: center;
-    padding: 20px;
-    padding-top: 50px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 10px 10px 10px 10px;
+  background-color: #F3F2F1;
+  text-align: center;
+  padding: 20px;
+  padding-top: 50px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 10px 10px 10px 10px;
 }
 
 .box {
-    background-color: #66C1DC;
-    width: 270px;
-    height: 220px;
-    text-align: center;
-    padding-top: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 30px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
-    box-sizing: border-box;
-    margin: 20px 20px;
+  background-color: #66C1DC;
+  width: 270px;
+  height: 220px;
+  text-align: center;
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 30px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  margin: 20px 20px;
 
-    /*For dismissing*/
-    transition: all 0.6s;
+  /*For dismissing*/
+  transition: all 0.6s;
 }
 
 .fusion-logo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #3C3C3B;
-    margin-right: 20px;
-    max-height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #3C3C3B;
+  margin-right: 20px;
+  max-height: 80px;
 }
 
 .top-text {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
-    padding-right: 50px;
-    padding-left: 50px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-right: 50px;
+  padding-left: 50px;
 }
 
 .switchDiv {
-    width: 100%;
-    text-align: right;
+  width: 100%;
+  text-align: right;
 }
 
 .switch {
-    margin-bottom: 20px;
-    margin-right: 20px;
-    margin-left: 15px;
-    width: 260px;
-    padding: 16px !important;
-    border: 1px solid #D9D9D9 !important; 
-    background-color: #D9D9D9 !important;
-    border-radius: 15px;
-    font-size: 17px !important;
-    font-weight: 550 !important;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    box-shadow: 3px 3px #3C3C3B;
-    
+  margin-bottom: 20px;
+  margin-right: 20px;
+  margin-left: 15px;
+  width: 260px;
+  padding: 16px !important;
+  border: 1px solid #D9D9D9 !important; 
+  background-color: #D9D9D9 !important;
+  border-radius: 15px;
+  font-size: 17px !important;
+  font-weight: 550 !important;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 3px 3px #3C3C3B;
+  
 }
 
 .switch:hover{
-  background-color: #3C3C3B !important;
-  color: #D9D9D9 !important;
-  box-shadow: 3px 3px #F3F2F1;
+background-color: #3C3C3B !important;
+color: #D9D9D9 !important;
+box-shadow: 3px 3px #F3F2F1;
 }
 
 .top-droplist {
-    width: 100%;
-    text-align: left;
-    margin-left: 15px;
+  width: 100%;
+  text-align: left;
+  margin-left: 15px;
 }
 
 @media screen and (max-width: 500px) {
-  .switch {
-      width: auto;
-  }
-  .switchDiv{
-    text-align: center;
-  }
-  .top-droplist{
-    text-align: center;
-    margin-left: 0px;
-  }
+.switch {
+    width: auto;
+}
+.switchDiv{
+  text-align: center;
+}
+.top-droplist{
+  text-align: center;
+  margin-left: 0px;
+}
 }
 
 .card{
-  background: rgba(0,0,0,0) !important;
-  border-style: none !important;
+background: rgba(0,0,0,0) !important;
+border-style: none !important;
 }
 
 
 .card-body{
-  padding: 0px !important;
+padding: 0px !important;
 }
 
 
 .blink {
-  animation: blink-animation 1s steps(5, start) infinite;
-  -webkit-animation: blink-animation 1s steps(5, start) infinite;
+animation: blink-animation 1s steps(5, start) infinite;
+-webkit-animation: blink-animation 1s steps(5, start) infinite;
 }
 @keyframes blink-animation {
-  to {
-    visibility: hidden;
-  }
+to {
+  visibility: hidden;
+}
 }
 @-webkit-keyframes blink-animation {
-  to {
-    visibility: hidden;
-  }
+to {
+  visibility: hidden;
+}
 }
