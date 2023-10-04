@@ -120,13 +120,13 @@
         { id: 14, name: "Ala-aulan narikka" },
         { id: 15, name: "2. kerroksen aulatila" },
         { id: 16, name: "Yläravintola lavan oikea puoli" },
-        { id: 17, name: "Linno 1 ja 2 neuvottelutila" },
+        { id: 17, name: "Linno 1 ja 2 neuvottelutila (1)" },
         { id: 18, name: "129" },
         { id: 19, name: "126" },
         { id: 20, name: "229" },
         { id: 21, name: "226" },
         { id: 22, name: "326" },
-        { id: 23, name: "Linno 1 ja 2 neuvottelutila" },
+        { id: 23, name: "Linno 1 ja 2 neuvottelutila (2)" },
       ];
 
       //Each section 
@@ -140,10 +140,14 @@
       //Array for rooms that currently have alerts
       var roomsAlert = [];
 
+      //Window alert message
+      var alertMessage = "The following rooms have alerts: ";
+      var alertLenght = alertMessage.length;
+
       //Threshold values
       const tempMaxThreshold = 23;
       const tempMinThreshold = 20;
-      const humidMaxThreshold = 50;
+      const humidMaxThreshold = 65;
       const co2MaxThreshold = 550;
 
 
@@ -273,46 +277,30 @@
           humidityText = `Humidity: ${humidity}`;
           co2Text = `CO2: ${co2}`;
 
-
-
-          //Sound alerts should go after display function
-          // Checks rooms' conditions and display window alerts, play sounds
-          if (temperature > tempMaxThreshold) {
-            document.getElementById('notif').play();
-            window.alert(`Temperature is too high in ${room.name}: ${temperature}`);
-          } else if (temperature < tempMinThreshold) {
-            document.getElementById('notif').play();
-            window.alert(`Temperature is too low in ${room.name}: ${temperature}`);
-          }
-
-          if (humidity > humidMaxThreshold) {
-            document.getElementById('notif').play();
-            window.alert(`Humidity is too high in ${room.name}: ${humidity}`);
-          }
-
-          if (co2 > co2MaxThreshold) {
-            document.getElementById('notif').play();
-            window.alert(`CO2 level is too high in ${room.name}: ${co2}`);
-          }
-
           // Rooms with alerts
           if (temperature > tempMaxThreshold || temperature < tempMinThreshold || humidity > humidMaxThreshold || co2 > co2MaxThreshold) {
             roomsAlert.push(room.id);
             //temp too high
             if (temperature > tempMaxThreshold) {
               temperatureText = `<span class="blink">🔥</span>Temperature: ${temperature}<span class="blink">🔥</span>`;
+              alertMessage += `\nTemperature is too high in ${room.name}: ${temperature}`;
             }
             //temp too low
             else if (temperature < tempMinThreshold) {
               temperatureText = `<span class="blink">❄</span>Temperature: ${temperature}<span class="blink">❄</span>`;
+              alertMessage += `\nTemperature is too low in ${room.name}: ${temperature}`;
+
             }
             //humid too high
             if (humidity > humidMaxThreshold) {
               humidityText = `<span class="blink">💧</span>Humidity: ${humidity}<span class="blink">💧</span>`;
+              alertMessage += `\nHumidity is too high in ${room.name}: ${humidity}`;
+
             }
             //co2 too high
             if (co2 > co2MaxThreshold) {
               co2Text = `<span class="blink">💀</span>CO2: ${co2}<span class="blink">💀</span>`;
+              alertMessage += `\nCO2 level is too high in ${room.name}: ${co2}`;
             }
           }
 
@@ -384,10 +372,12 @@
 
       function displayRoomData() {
         for (let i = 0; i < roomsData.length; i++) {
+          //Put data in correct box
           const boxId = `box-${roomsData[i][0]}`;
           const boxElement = document.getElementById(boxId);
 
           if (boxElement) {
+            //Change box color if there is an alert
             if (roomsAlert.includes(roomsData[i][0])) {
               boxElement.style.backgroundColor = "#F66D6E";
             }
@@ -406,14 +396,33 @@
             `;
           }
         }
+        displayWindowAlerts();
+
+      }
+
+      function displayWindowAlerts(){
+        //Only show window alert if there are alerts
+        if (alertMessage.length > alertLenght) {
+          document.getElementById('notif').play();
+          //Display window alert after the boxes load
+          setTimeout(() => {
+            alert(alertMessage);
+          }, 1);  
+        
+        }
+
       }
 
       // Function to fetch data for all rooms
       async function fetchDataForAllRooms() {
+        //Resetting the page
         roomsAlert = [];
         roomsData = [];
         document.getElementById("realTime").innerHTML = "";
         localStorage.clear();
+        alertMessage = "The following rooms have alerts: ";
+        
+        //Fetching data for all rooms
         for (const room of rooms) {
           const storedData = localStorage.getItem(`room-${room.id}-data`);
 
