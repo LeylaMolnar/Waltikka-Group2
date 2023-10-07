@@ -37,8 +37,8 @@
     <div class="top-text">
       <h1>Sensors' Dashboard</h1>
 
-      <div class="row">
-        <div class="col">
+      <div class="row justify-content-md-between justidy-content-center">
+        <div class="col d-flex justify-content-center">
           <div class="top-droplist">
             <div>
               <label for="group-select" style="font-size: small;">Filter:</label>
@@ -97,11 +97,9 @@
 
 
     <!--Dashboard layout-->
-    <div id="realTime" class="row justify-content-around container">
+    <div id="realTime" class="row justify-content-md-around justify-content-center container">
 
-      <div class="row" id="realTime">
-        <!-- Sensor boxes will be generated here -->
-      </div>
+     
     </div>
 
     <!-- Script for rooms' data starts here-->
@@ -361,7 +359,7 @@
             categoryClass = 'AreaC';
           }
           const sensorBox = document.createElement('div');
-          sensorBox.className = `col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box ${categoryClass}`;
+          sensorBox.className = `col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box d-flex justify-content-center ${categoryClass}`;
           sensorBox.innerHTML = `
               <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
           `;
