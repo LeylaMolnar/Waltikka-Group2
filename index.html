@@ -91,7 +91,7 @@
 
     <!--PowerBI report-->
     <iframe id="powerBI" style="display: none;" title="Sample Report Demo" width="100%" height="541.25"
-      src="https://app.powerbi.com/view?r=eyJrIjoiYjc1ZWQ2MTctNzBhZC00MmFmLWJmYjItNTkyNTgzODhhM2M4IiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9"
+      src="https://app.powerbi.com/view?r=eyJrIjoiMDRhZWU2NTItMzZmNy00YzFmLThmNGQtNGM1MmZkYjZmZGJjIiwidCI6ImZiZDJmMDQ1LWIzNGMtNDY3My05NTM0LThmMjM3NDM1NWNlYyIsImMiOjh9"
       frameborder="0" allowFullScreen="true"></iframe>
 
 
@@ -161,7 +161,7 @@
         try {
           const currentDate = new Date();
           const formattedTimestamp = currentDate.toISOString();
-          const fifteenMinutesLater = new Date(currentDate.getTime() - 30 * 60000);
+          const fifteenMinutesLater = new Date(currentDate.getTime() - 24 * 60 * 60000);
           const formattedFifteenMinutesLater = fifteenMinutesLater.toISOString();
 
           const apiKey = 'II6dsQDctGjWeoHgnT5wPjXlyJVmmUbvASnh2Zay';
@@ -439,7 +439,7 @@
 
       //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(), 30000);
+      setInterval(() => fetchDataForAllRooms(),  6 * 60 * 60000);
 
 
       function filterSelection(category) {
