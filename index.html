@@ -361,7 +361,7 @@
           const sensorBox = document.createElement('div');
           sensorBox.className = `col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-12 sensor-box d-flex justify-content-center ${categoryClass}`;
           sensorBox.innerHTML = `
-              <div class="box" id="box-${id}" onclick="dismissAlert(this.id)">Sensor ${id}</div>
+              <div class="box" id="box-${id}">Sensor ${id}</div>
           `;
           document.getElementById('realTime').appendChild(sensorBox);
         }
@@ -383,14 +383,17 @@
               boxElement.style.backgroundColor = "#66C1DC";
             }
             boxElement.innerHTML = `
-                <div class="card">
+                <div class="card" onclick="dismissAlert(this.parentElement.id);">
                     <div class="card-body">
-                        <h5 class="card-title">${roomsData[i][1]}</h5>
-                        <p class="card-text">${roomsData[i][2]}</p>
-                        <p class="card-text">${roomsData[i][3]}</p>
-                        <p class="card-text">${roomsData[i][4]}</p>
+                        <h5 class="card-title">${roomsData[i][1]}</h5> 
+                        <p class="card-text fadeIn">${roomsData[i][2]}</p>
+                        <p class="card-text fadeIn">${roomsData[i][3]}</p>
+                        <p class="card-text fadeIn">${roomsData[i][4]}</p>
                     </div>
                 </div>
+                <p class="upArrow fadeIn" id="upArrow" onclick="minimize(this.parentElement.id)"><img src="ArrowUp.png"></p>
+                <p class="downArrow fadeIn"><img src="ArrowDown.png"></p>
+
             `;
           }
         }
@@ -453,11 +456,58 @@
 
       //Dismissing alerts
       function dismissAlert(boxId) {
+        
+        //If the box is minimized, unminimize it instead of dismissing
+        if (document.querySelector(`#${boxId}`).offsetHeight < 200) {
+          document.getElementById(boxId).style.height = "220px";
+          document.getElementById(boxId).childNodes[5].style.display = "none";  
+          setTimeout(() => unMinimize(boxId), 250);          
+        }
+        else{
         //Replace blinking icon with static '!'
         const staticAlert = "<b> ! </b>";
         const boxElement = document.getElementById(boxId);
         boxElement.style.backgroundColor = "#66C1DC";
         boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
+        }
+      }
+      //FADEIN CURRENTLY BROKEN
+      //Functin to open minimized boxes
+      function unMinimize(boxId){
+        var boxElement = document.getElementById(boxId);
+        var cardBody = boxElement.childNodes[1].childNodes[1];
+
+        boxElement.childNodes[3].classList.remove("fadeIn");
+        cardBody.childNodes[7].classList.remove("fadeIn");
+        cardBody.childNodes[5].classList.remove("fadeIn");
+        cardBody.childNodes[3].classList.remove("fadeIn");
+
+        boxElement.childNodes[3].style.display = "block";          
+        cardBody.childNodes[7].style.display = "block";
+        cardBody.childNodes[5].style.display = "block";
+        cardBody.childNodes[3].style.display = "block";  
+        
+      }
+      //Function to minimize boxes
+      function minimize(boxId){
+        var boxElement = document.getElementById(boxId);
+        var cardBody = boxElement.childNodes[1].childNodes[1];
+
+        boxElement.style.height = "75px";
+        
+        boxElement.childNodes[3].classList.add("fadeIn");
+        boxElement.childNodes[5].classList.add("fadeIn");
+        cardBody.childNodes[7].classList.add("fadeIn");
+        cardBody.childNodes[5].classList.add("fadeIn");
+        cardBody.childNodes[5].classList.add("fadeIn");
+
+        boxElement.childNodes[3].style.display = "none";     
+        boxElement.childNodes[5].style.display = "block";          
+
+        cardBody.childNodes[7].style.display = "none";
+        cardBody.childNodes[5].style.display = "none";
+        cardBody.childNodes[3].style.display = "none";
+
       }
 
     </script>

@@ -61,7 +61,7 @@ body {
 .switch {
   margin-bottom: 20px;
   margin-right: 20px;
-  margin-left: 15px;
+  margin-left: 20px;
   width: 260px;
   padding: 16px !important;
   border: 1px solid #D9D9D9 !important;
@@ -91,23 +91,22 @@ select{
   max-width: 85%;
 }
 
+.card{
+  padding-bottom: 65px;
+}
+
 @media screen and (max-width: 400px) {
   .switch {
     width: auto;
   }
+}
 
-  .switchDiv {
-    text-align: center;
-  }
-
-  div.box {
-    margin-left: 25px;
-  }
-
-  button#btn {
-    margin-left: 12px;
+@media screen and (min-width: 768px){
+  .downArrow, .upArrow{
+    display: none;
   }
 }
+
 
 @media screen and (max-width: 767px){
   div.box:nth-child(n) {
@@ -130,8 +129,53 @@ select{
     margin-left: 0px !important;
     margin-right: 0px !important;
   }
+
+  .white-box2{
+    padding-top: 20px;
+  }
+
+  .top-text{
+    margin-bottom: 0px;
+  }
+
+  .box{
+    margin-top: 15px;
+    width: 300px;
+  }
+
+  .card-title{
+    font-size: 20px;
+  }
+
+  /*Minimizing boxes on mobile*/
+  .card-text{
+    display: none;
+  }
+  .box{
+    height: 75px;
+    margin-bottom: 0px;
+  }
+
+  .upArrow{
+    display: none;
+    margin-top: 20px;
+  }
+  .card{
+    padding-bottom: 0px;
+  }
 }
 
+.fadeIn{
+  animation: fadeInAnimation 300ms forwards;
+}
+@keyframes fadeInAnimation {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+   }
+}
 
 .card {
   background: rgba(0, 0, 0, 0) !important;
