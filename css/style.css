@@ -204,3 +204,7 @@ select{
     visibility: hidden;
   }
 }
+
+.hidden{
+  display: none !important;
+}

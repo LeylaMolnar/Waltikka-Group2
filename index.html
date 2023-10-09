@@ -99,7 +99,7 @@
     <!--Dashboard layout-->
     <div id="realTime" class="row justify-content-md-around justify-content-center container">
 
-     
+
     </div>
 
     <!-- Script for rooms' data starts here-->
@@ -131,6 +131,9 @@
       const areaA = [7, 9, 12, 14, 15, 16];
       const areaB = [13, 17, 23];
       const areaC = [8, 10, 11, 18, 19, 20, 21, 22];
+
+      //Array for rooms that were filtered out
+      var roomsHidden = [];
 
       //Array for data of the rooms
       var roomsData = [];
@@ -273,8 +276,12 @@
 
           temperatureText = `Temperature: ${temperature}`;
           humidityText = `Humidity: ${humidity}`;
-          co2Text = `CO2: ${co2}`;
-
+          if (co2 == 0) {
+            co2Text = `CO2: Null`;
+          }
+          else {
+            co2Text = `CO2: ${co2}`;
+          }
           // Rooms with alerts
           if (temperature > tempMaxThreshold || temperature < tempMinThreshold || humidity > humidMaxThreshold || co2 > co2MaxThreshold) {
             roomsAlert.push(room.id);
@@ -314,6 +321,10 @@
         //Once all rooms data has been stored
         if (roomsData.length == rooms.length) {
           generateSensorBoxes();
+          displayWindowAlerts();
+        }
+        else {
+
         }
       }
 
@@ -321,6 +332,7 @@
 
       //Generates the box LAYOUT on the page
       function generateSensorBoxes() {
+        document.getElementById("realTime").innerHTML = " ";
         //boxOrder contains all sensor IDs in the desired order, starting with alerts, then areaA, B, C, and any leftover (just in case)
         let boxOrder = [...roomsAlert]
         for (let i = 0; i < areaA.length; i++) {
@@ -349,7 +361,14 @@
 
         //Create sensor boxes and mark them with their categories
         let categoryClass = '';
+
+        //Remove boxes which were filtered out
+        boxOrder = boxOrder
+          .filter(x => !roomsHidden.includes(x))
+          .concat(roomsHidden.filter(x => !boxOrder.includes(x)));
+
         for (let i = 0; i < boxOrder.length; i++) {
+
           let id = boxOrder[i];
           if (areaA.includes(id)) {
             categoryClass = 'AreaA';
@@ -397,19 +416,18 @@
             `;
           }
         }
-        displayWindowAlerts();
 
       }
 
-      function displayWindowAlerts(){
+      function displayWindowAlerts() {
         //Only show window alert if there are alerts
         if (alertMessage.length > alertLenght) {
           document.getElementById('notif').play();
           //Display window alert after the boxes load
           setTimeout(() => {
             alert(alertMessage);
-          }, 1);  
-        
+          }, 1);
+
         }
 
       }
@@ -422,7 +440,7 @@
         document.getElementById("realTime").innerHTML = "";
         localStorage.clear();
         alertMessage = "The following rooms have alerts: ";
-        
+
         //Fetching data for all rooms
         for (const room of rooms) {
           const storedData = localStorage.getItem(`room-${room.id}-data`);
@@ -440,40 +458,43 @@
 
       //Fetch data every 30 seconds
       //CHANGE THIS VALUE LATER
-      setInterval(() => fetchDataForAllRooms(),  6 * 60 * 60000);
+      setInterval(() => fetchDataForAllRooms(), 6 * 60 * 60000);
 
 
       function filterSelection(category) {
+        roomsHidden = [];
+
         const sensorBoxes = document.querySelectorAll('.sensor-box');
         sensorBoxes.forEach(box => {
           if (category === 'AllSensors' || box.classList.contains(category)) {
-            box.style.display = 'block';
+            box.childNodes[1].style.display = 'block';
           } else {
-            box.style.display = 'none';
+            roomsHidden.push(parseInt(box.childNodes[1].id.substring(4)));
+            box.childNodes[1].style.display = "none";
           }
         });
+        generateSensorBoxes();
       }
 
       //Dismissing alerts
       function dismissAlert(boxId) {
-        
+
         //If the box is minimized, unminimize it instead of dismissing
         if (document.querySelector(`#${boxId}`).offsetHeight < 200) {
           document.getElementById(boxId).style.height = "220px";
-          document.getElementById(boxId).childNodes[5].style.display = "none";  
-          setTimeout(() => unMinimize(boxId), 250);          
+          document.getElementById(boxId).childNodes[5].style.display = "none";
+          setTimeout(() => unMinimize(boxId), 250);
         }
-        else{
-        //Replace blinking icon with static '!'
-        const staticAlert = "<b> ! </b>";
-        const boxElement = document.getElementById(boxId);
-        boxElement.style.backgroundColor = "#66C1DC";
-        boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
+        else {
+          //Replace blinking icon with static '!'
+          const staticAlert = "<b> ! </b>";
+          const boxElement = document.getElementById(boxId);
+          boxElement.style.backgroundColor = "#66C1DC";
+          boxElement.innerHTML = boxElement.innerHTML.replaceAll(/<span class="blink">.<\/span>/gu, staticAlert);
         }
       }
-      //FADEIN CURRENTLY BROKEN
       //Functin to open minimized boxes
-      function unMinimize(boxId){
+      function unMinimize(boxId) {
         var boxElement = document.getElementById(boxId);
         var cardBody = boxElement.childNodes[1].childNodes[1];
 
@@ -482,27 +503,27 @@
         cardBody.childNodes[5].classList.remove("fadeIn");
         cardBody.childNodes[3].classList.remove("fadeIn");
 
-        boxElement.childNodes[3].style.display = "block";          
+        boxElement.childNodes[3].style.display = "block";
         cardBody.childNodes[7].style.display = "block";
         cardBody.childNodes[5].style.display = "block";
-        cardBody.childNodes[3].style.display = "block";  
-        
+        cardBody.childNodes[3].style.display = "block";
+
       }
       //Function to minimize boxes
-      function minimize(boxId){
+      function minimize(boxId) {
         var boxElement = document.getElementById(boxId);
         var cardBody = boxElement.childNodes[1].childNodes[1];
 
         boxElement.style.height = "75px";
-        
+
         boxElement.childNodes[3].classList.add("fadeIn");
         boxElement.childNodes[5].classList.add("fadeIn");
         cardBody.childNodes[7].classList.add("fadeIn");
         cardBody.childNodes[5].classList.add("fadeIn");
         cardBody.childNodes[5].classList.add("fadeIn");
 
-        boxElement.childNodes[3].style.display = "none";     
-        boxElement.childNodes[5].style.display = "block";          
+        boxElement.childNodes[3].style.display = "none";
+        boxElement.childNodes[5].style.display = "block";
 
         cardBody.childNodes[7].style.display = "none";
         cardBody.childNodes[5].style.display = "none";
