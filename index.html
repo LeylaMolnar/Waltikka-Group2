@@ -135,6 +135,9 @@
       //Array for rooms that were filtered out
       var roomsHidden = [];
 
+      //Array for all all sensor boxes (used in filtering)
+      var sensorBoxes = document.querySelectorAll('.sensor-box');
+
       //Array for data of the rooms
       var roomsData = [];
 
@@ -384,6 +387,9 @@
           `;
           document.getElementById('realTime').appendChild(sensorBox);
         }
+        if (boxOrder.length == rooms.length) {
+          sensorBoxes = document.querySelectorAll('.sensor-box');
+        }
         displayRoomData();
       }
 
@@ -464,7 +470,6 @@
       function filterSelection(category) {
         roomsHidden = [];
 
-        const sensorBoxes = document.querySelectorAll('.sensor-box');
         sensorBoxes.forEach(box => {
           if (category === 'AllSensors' || box.classList.contains(category)) {
             box.childNodes[1].style.display = 'block';
